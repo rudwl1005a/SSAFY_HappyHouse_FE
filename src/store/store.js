@@ -9,7 +9,7 @@ export default new Vuex.Store({
         sidebar: false,
         sidebar_arrow: false,
         isLogin: false,
-        userInfo: [],
+        userInfo: {userId:"123"},
     },
     mutations : {
         CHANGE_MAIN(state, payload) {
@@ -37,5 +37,10 @@ export default new Vuex.Store({
             state.isLogin = false;
             state.userInfo = [];
         }
+    },
+    getters: {
+        getUserInfo(state) {
+            return state.userInfo;
+        },
     }
 })
