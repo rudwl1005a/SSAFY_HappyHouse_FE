@@ -3,13 +3,14 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter);
 
-import Home from '@/components/Home.vue'
-import Login from '@/components/Login.vue'
-import Register from '@/components/Register.vue'
-import UserInfo from '@/components/UserInfo.vue'
-import ApartSearch from '@/components/ApartSearch.vue'
+import Home from '@/views/Home.vue'
+import Login from '@/views/Login.vue'
+import Register from '@/views/Register.vue'
+import UserInfo from '@/views/UserInfo.vue'
+import ApartSearch from '@/views/ApartSearch.vue'
+import Board from '@/views/Board.vue'
+
 import Error404 from '@/components/error/404.vue'
-import Board from '@/components/Board.vue'
 
 // NavigationDuplicated 에러 해결
 const originalPush = VueRouter.prototype.push;
