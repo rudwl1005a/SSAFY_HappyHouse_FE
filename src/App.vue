@@ -1,28 +1,36 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div id="app" style="overflow-x: hidden">
+        <side-bar></side-bar>
+        <router-view/>
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import SideBar from "@/views/Sidebar.vue";
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+    name: "app",
+    components: { SideBar },
+    data() {
+        return {
+
+        }
+    },
+    methods: {
+
+    }
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+@import "@/css/volt.css";
+
+.change-big {
+    padding-left: 312px !important;
+    transition-duration: 0.5s;
+}
+.change-small {
+    padding-left: 102px !important;
+    transition-duration: 0.5s;
 }
 </style>
