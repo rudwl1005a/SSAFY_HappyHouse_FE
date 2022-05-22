@@ -39,11 +39,12 @@
                 <div class="row">
                     <div class="col-8  mb-3 pt-1">
                         <select class="col form-select-sm m-2" v-model="sortType">
-                            <option value="0">뭐 정렬할 줄 알았냐? ㅋㅋㅋㅋ</option>
-                            <option value="1">디자인 하기 싫어어어어어어엉</option>
-                            <option value="2">뭘 더 해줘야해</option>
-                            <option value="3">경대님이 해주겠지ㅋㅋㅋㅋ</option>
-                            <option value="4">경대넴 바보</option>
+                            <option value="0"> </option>
+                            <option value="1">거래가 많은 순</option>
+                            <option value="2">최근 건축 순</option>
+                            <option value="3">거래가 높은 순</option>
+                            <option value="4">최근거래가 순</option>
+                            <option value="5">이름순</option>
                         </select>
                     </div>
                     <div class="col-4  mb-3 pt-1">
@@ -54,7 +55,7 @@
                 <!--검색 결과 정렬 및 관심지역 토글 창 끝-->
                 <div class="row leftSide">
                     <div class="card p-0">
-                        <ul class="list-group list-group-flush" id="searchResult">
+                        <ul class="list-group list-group-flush" id="searchResult" >
     <li class="list-group-item p-1" style="cursor: pointer" v-for="(apart, index) in apartList" :key="index" @click="detailApart(apart.aptCode)">
                             <!--클릭 이벤트와 마우스 이벤트들이 자식 요소들에게도 이벤트가 발생함.-->
         <div class="card border-0 shadow" @mouseover="itemMouseOver($event, apart)" @mouseout="itemMouseOut">
@@ -75,10 +76,10 @@
                             <h5 class="fw-extrabold mb-2">{{ apart.aptName }}</h5>
                         </div>
                         <small class="text-gray-500">
-                            {{ apart.buildYear }}년 건축
+                            {{ apart.buildYear }}년 건축, 거래 내역 {{apart.dealCount}}건
                         </small> 
-                        <div class="small d-flex mt-1">                               
-                            <div>최근 거래 or 거래 건수 <svg class="icon icon-xs text-success" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg><span class="text-success fw-bolder">4%</span></div>
+                        <div class="small d-flex mt-1" v-if="apart.dealCount">                               
+                            <div>최근 거래 {{apart.recentPrice}}만원, 최고가 {{apart.maxPrice}}만원 <svg class="icon icon-xs text-success" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg><span class="text-success fw-bolder">4%</span></div>
                         </div>
                     </div>
                     <div class="col-1 col-xl-1 px-xl-0">
@@ -107,7 +108,9 @@
     3. apart item 디자인 수정
     4. apart item 컴포넌트로 변환
 
-    5. 맵이랑 사이드 검색창이랑 크기 조절? 검색 결과에따라 포커싱 맞추면 제대로 안 맞춰짐
+    5. 검색 결과가 없을 때 디폴트 맵 설정
+
+    6. 맵이랑 사이드 검색창이랑 크기 조절? 검색 결과에따라 포커싱 맞추면 제대로 안 맞춰짐
 -->
 
 <script>
@@ -192,8 +195,6 @@ export default {
 
                 this.dongList = data;
             }
-
-            
             this.getSearchResultInit();
         },
         dong: async function(){
@@ -204,6 +205,9 @@ export default {
             
             this.getSearchResultInit();
         },
+        sortType : function(){
+            this.getSearchResult();
+        }
     },
     computed :{
         userInfo :{
@@ -222,13 +226,14 @@ export default {
         }, //end getSido
         getURL: function () {
             let url =  "";
-
+            this.OFFSET = (this.CURRENT_PAGE_INDEX - 1) * this.LIST_ROW_COUNT;
             if (this.interestToggle == "true"){
                 url = "/"+ this.userInfo.userId + "/interest/aparts?limit=" + this.LIST_ROW_COUNT + "&offset=" + this.OFFSET;
             }
             else{
                 url = "/aparts/all?limit=" + this.LIST_ROW_COUNT + "&offset=" + this.OFFSET + "&userId=" + this.userInfo.userId;
             }
+            url+="&sortType="+ this.sortType;
 
             if (this.dong != "0") {
                 url += "&dongCode=" + this.dong;
@@ -263,6 +268,7 @@ export default {
         getSearchResultInit: function () {
             this.OFFSET = 0;
             this.CURRENT_PAGE_INDEX = 1;
+            this.sortType = "0";
             this.getSearchResult();
         }, // end getSearchResultInit
         detailApart: async function (aptCode) {
@@ -301,7 +307,7 @@ export default {
             event.target.style.background = "white";
             this.apartItem = null;
         },
-
+        
     }, //end methods
 };
 </script>
