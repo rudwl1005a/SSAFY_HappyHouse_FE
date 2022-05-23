@@ -13,11 +13,11 @@
 -->
 <script>
 export default {
-    props: ["apartList", "apartItem"],
+    props: ["apartList"],
     data() {
         return {
             map: null,
-            customOverlay: null,
+            customOverlay: null,  
             geocoder: null,
 
             markers: [],
@@ -49,23 +49,7 @@ export default {
             this.displayMarkers();
         },
 
-        apartItem : function () {
-            if(this.apartItem == null){
-                this.apartItemCirclecircle.setMap(null);
-                return;
-            }
-            this.apartItemCirclecircle = new kakao.maps.Circle({
-                center : new kakao.maps.LatLng(this.apartItem.lat, this.apartItem.lng),  // 원의 중심좌표 입니다 
-                radius: 500, // 미터 단위의 원의 반지름입니다 
-                strokeWeight: 1, // 선의 두께입니다 
-                strokeColor: '#75B8FA', // 선의 색깔입니다
-                strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                strokeStyle: 'line', // 선의 스타일 입니다
-                fillColor: '#CFE7FF', // 채우기 색깔입니다
-                fillOpacity: 0.7  // 채우기 불투명도 입니다   
-            }); 
-            this.apartItemCirclecircle.setMap(this.map);
-        }
+        
     },
     methods: {
         initMap: function () {
@@ -94,6 +78,37 @@ export default {
                 // LatLngBounds 객체에 좌표를 추가합니다
                 bounds.extend(placePosition);
 
+                (function (marker, title, code, place) {
+                    window.kakao.maps.event.addListener(marker, "mouseover", function () {
+                        $this.apartItemCirclecircle = new kakao.maps.Circle({
+                            center : new kakao.maps.LatLng(place.lat, place.lng),  // 원의 중심좌표 입니다 
+                            radius: 500, // 미터 단위의 원의 반지름입니다 
+                            strokeWeight: 1, // 선의 두께입니다 
+                            strokeColor: '#75B8FA', // 선의 색깔입니다
+                            strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                            strokeStyle: 'line', // 선의 스타일 입니다
+                            fillColor: '#CFE7FF', // 채우기 색깔입니다
+                            fillOpacity: 0.7  // 채우기 불투명도 입니다   
+                        }); 
+                        $this.apartItemCirclecircle.setMap($this.map);
+                    });
+                    window.kakao.maps.event.addListener(marker, "mouseout", function () {
+                        $this.apartItemCirclecircle.setMap(null);
+                    });
+                    // window.kakao.maps.event.addListener($this.map, "click", function () {
+                    //     console.log($this.customOverlay);
+                    //     $this.customOverlay.setMap(null);
+                    // });
+
+                    // itemEl.onmouseover = function () {
+                    //     $this.displayInfowindow(marker, title);
+                    // };
+
+                    // itemEl.onmouseout = function () {
+                    //     $this.customOverlay.setMap(null);
+                    // };
+                })(marker, places[i].aptName, places[i].aptCode, places[i]);
+                //fragment.appendChild(itemEl);
             }
             // 마커를 생성하고 지도에 표시합니다
 
