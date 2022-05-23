@@ -6,9 +6,10 @@
 </template>
 <!--
     맵에서 할 일
-    1. 아이콘 변화주기
-    2. 클릭 이벤트 넣기
-    3. vue 컴포넌트로 바꾸기
+    1. info 창주기
+    2. 주변상권 보여주기
+    3. 주변상권 토글
+    4. 모든 리스트 종료 구현
 
 -->
 <script>
@@ -24,8 +25,12 @@ export default {
             mapContainer: null,
             mapOption: null,
 
-
             apartItemCircle : null,
+
+            departmentList: [],
+            apartItemInfo : null,
+
+
         };
     },
     mounted() {
@@ -42,14 +47,16 @@ export default {
     },
     watch: {
         apartList: function () {
+            if(this.apartList.length == 0) {
+                this.noSearchResult();
+                return;
+            };
             // console.log("watch : apartList");
             // console.log(this.apartList);
             this.removeMarker();
             if(this.apartList == null) return;
             this.displayMarkers();
         },
-
-        
     },
     methods: {
         initMap: function () {
@@ -62,6 +69,14 @@ export default {
             this.map = new kakao.maps.Map(this.mapContainer, this.mapOption);
             // init map
         },
+        noSearchResult : function(){
+            if(this.map == null) return;
+            this.removeMarker();
+            let bounds = new kakao.maps.LatLngBounds();
+            let placePosition = new kakao.maps.LatLng(37.566826, 126.9786567);
+            bounds.extend(placePosition);
+            this.map.setBounds(bounds);
+        },
         displayMarkers: function () {
             const places = Array.from(this.apartList);
             let bounds = new kakao.maps.LatLngBounds();
@@ -71,7 +86,7 @@ export default {
             let $this = this;
             for (var i = 0; i < places.length; i++) {
                 let placePosition = new kakao.maps.LatLng(places[i].lat, places[i].lng);
-                let marker = this.addMarker(placePosition, i);
+                let marker = this.addMarker(placePosition, places[i]);
 
                 // console.log(places[i].lat, places[i].lng);
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
@@ -80,25 +95,14 @@ export default {
 
                 (function (marker, title, code, place) {
                     window.kakao.maps.event.addListener(marker, "mouseover", function () {
-                        $this.apartItemCirclecircle = new kakao.maps.Circle({
-                            center : new kakao.maps.LatLng(place.lat, place.lng),  // 원의 중심좌표 입니다 
-                            radius: 500, // 미터 단위의 원의 반지름입니다 
-                            strokeWeight: 1, // 선의 두께입니다 
-                            strokeColor: '#75B8FA', // 선의 색깔입니다
-                            strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                            strokeStyle: 'line', // 선의 스타일 입니다
-                            fillColor: '#CFE7FF', // 채우기 색깔입니다
-                            fillOpacity: 0.7  // 채우기 불투명도 입니다   
-                        }); 
-                        $this.apartItemCirclecircle.setMap($this.map);
+                        $this.drawCircle(place)
                     });
                     window.kakao.maps.event.addListener(marker, "mouseout", function () {
-                        $this.apartItemCirclecircle.setMap(null);
+                        $this.removeCircle();
                     });
-                    // window.kakao.maps.event.addListener($this.map, "click", function () {
-                    //     console.log($this.customOverlay);
-                    //     $this.customOverlay.setMap(null);
-                    // });
+                    window.kakao.maps.event.addListener(marker, "click", function () {
+                        $this.focusApatItem(place)
+                    });
 
                     // itemEl.onmouseover = function () {
                     //     $this.displayInfowindow(marker, title);
@@ -115,19 +119,20 @@ export default {
             // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
             this.map.setBounds(bounds);
         }, //end displayMarkers
-        addMarker: function (position, idx, title) {
+        addMarker: function (position, place) {
             // 이미지 바꿔야함
-            var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png", // 마커 이미지 url, 스프라이트 이미지를 씁니다
-                imageSize = new kakao.maps.Size(36, 37), // 마커 이미지의 크기
-                imgOptions = {
-                    spriteSize: new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
-                    spriteOrigin: new kakao.maps.Point(0, idx * 46 + 10), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
-                    offset: new kakao.maps.Point(13, 37), // 마커 좌표에 일치시킬 이미지 내에서의 좌표
-                },
-                markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+            var imageSrc = "https://cdn1.iconfinder.com/data/icons/user-interface-2-flat/24/point_place_location_map_marker_pin_interface_-512.png";
+            
+            if(place.isUserInterest == 1){
+                imageSrc = "https://cdn1.iconfinder.com/data/icons/map-navigation-flat/64/pin_map_location_place_interface-512.png"; // 마커 이미지 url, 스프라이트 이미지를 씁니다
+            }
+            
+            ; // 마커 이미지 url, 스프라이트 이미지를 씁니다
+            var imageSize = new kakao.maps.Size(36, 37), // 마커 이미지의 크기
+                markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize),
                 marker = new kakao.maps.Marker({
                     position: position, // 마커의 위치
-                    //image: markerImage,
+                    image: markerImage,
                 });
 
             marker.setMap(this.map); // 지도 위에 마커를 표출합니다
@@ -146,6 +151,30 @@ export default {
             while (el.hasChildNodes()) {
                 el.removeChild(el.lastChild);
             }
+        },
+        // 원 그리기
+        drawCircle: function (apart){
+            this.apartItemCirclecircle = new kakao.maps.Circle({
+                    center : new kakao.maps.LatLng(apart.lat, apart.lng),  // 원의 중심좌표 입니다 
+                    radius: 500, // 미터 단위의 원의 반지름입니다 
+                    strokeWeight: 1, // 선의 두께입니다 
+                    strokeColor: '#75B8FA', // 선의 색깔입니다
+                    strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                    strokeStyle: 'line', // 선의 스타일 입니다
+                    fillColor: '#CFE7FF', // 채우기 색깔입니다
+                    fillOpacity: 0.5  // 채우기 불투명도 입니다   
+                }); 
+                this.apartItemCirclecircle.setMap(this.map);
+        },
+        removeCircle: function(){
+            this.apartItemCirclecircle.setMap(null);
+        },
+        focusApatItem: function(apart){
+            console.log("해당 마커에 포커싱하기");
+            let placePosition = new kakao.maps.LatLng(apart.lat, apart.lng);
+            let bounds = new kakao.maps.LatLngBounds();
+            bounds.extend(placePosition);
+            this.map.setBounds(bounds);
         },
 
     },

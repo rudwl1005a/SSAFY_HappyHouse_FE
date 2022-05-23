@@ -1,5 +1,5 @@
 <template>
-    <div :class="{ 'change-big': $store.state.mainDiv, 'change-small': !$store.state.mainDiv }">
+    <div :class="{ 'change-big': $store.state.mainDiv, 'change-small': !$store.state.mainDiv }" style="min-height: 935px;">
         <map-view :apartList="apartList" ref="MapView"></map-view>
         <!--시구동 검색 창 시작-->
         <div class="card col-sm-12" style="min-height: 935px; z-index: 1; position: absolute; top: 0; right: 0; z-index: 1; width: 400px">
@@ -53,12 +53,13 @@
                     </div>
                 </div>
                 <!--검색 결과 정렬 및 관심지역 토글 창 끝-->
-                <div class="row leftSide">
-                    <div class="card p-0">
+                <div class="row leftSide" @scroll="handleNotificationListScroll">
+                    <div class="card p-0" >
                         <ul class="list-group list-group-flush" id="searchResult" >
-    <li class="list-group-item p-1" style="cursor: pointer" v-for="(apart, index) in apartList" :key="index" @click="detailApart(apart.aptCode)" @click.stop >
+                            <li class="text-xl-center" v-if="apartList.length == 0">검색 결과가 없습니다.</li>
+    <li class="list-group-item p-1" style="cursor: pointer" v-for="(apart, index) in apartList" :key="index"  >
                             <!--클릭 이벤트와 마우스 이벤트들이 자식 요소들에게도 이벤트가 발생함.-->
-        <div class="card border-0 shadow apartItem" @mouseover="itemMouseOver($event, apart)" @mouseout="itemMouseOut">
+        <div class="card border-0 shadow apartItem" @mouseover="itemMouseOver(apart)" @mouseout="itemMouseOut()" @click="focusApatItem(apart)">
             <div class="card-body p-1">
                 <div class="row d-block d-xl-flex align-items-center">
                     <div class="col-12 col-xl-3 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
@@ -70,20 +71,20 @@
                             <h3 class="mb-1">{{ apart.aptName }}</h3>
                         </div>
                     </div>
-                    <div class="col-11 col-xl-8 px-xl-0">
+                    <div class="col-12 col-xl-8 px-xl-0">
                         <div class="d-none d-sm-block">
                             <h2 class="h6 text-gray-400 mb-0"> {{ apart.sidoName }} {{ apart.gugunName }} {{ apart.dongName }} {{ apart.jibun }}</h2>
                             <h5 class="fw-extrabold mb-2">{{ apart.aptName }}</h5>
                         </div>
                         <small class="text-gray-500">
-                            {{ apart.buildYear }}년 건축, 거래 내역 {{apart.dealCount}}건
+                            {{ apart.buildYear }}년 건축, <span class="detailApartItem" @click.stop="detailApart(apart.aptCode)">거래 내역 {{apart.dealCount}}건</span>
                         </small> 
                         <div class="small d-flex mt-1" v-if="apart.dealCount">                               
                             <div>최근 거래 {{apart.recentPrice}}만원, 최고가 {{apart.maxPrice}}만원 <svg class="icon icon-xs text-success" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg><span class="text-success fw-bolder">4%</span></div>
                         </div>
                     </div>
-                    <div class="col-1 col-xl-1 px-xl-0">
-                        <font-awesome-icon v-bind:icon="heartType[apart.isUserInterest]" 
+                    <div>
+                        <font-awesome-icon class="heartIcon" v-bind:icon="heartType[apart.isUserInterest]" 
                             v-bind:style="heartStyle[apart.isUserInterest]"  @click.stop="changeInterestApart(apart)" />
                     </div>
                 </div>
@@ -103,14 +104,6 @@
 
 <!--
     할 일
-    1. apart item 클릭이벤트 버그 고치기
-    2. apart item 마우스 오버 고치기
-    3. apart item 디자인 수정
-    4. apart item 컴포넌트로 변환
-
-    5. 검색 결과가 없을 때 디폴트 맵 설정
-
-    6. 맵이랑 사이드 검색창이랑 크기 조절? 검색 결과에따라 포커싱 맞추면 제대로 안 맞춰짐
 -->
 
 <script>
@@ -132,6 +125,10 @@ export default {
     components: { ApartDetailModal, MapView },
     data() {
         return {
+            //
+            heartType:[ "fa-regular fa-heart", "fa-solid fa-heart"],
+            heartStyle:[ {}, {color:"#ca1a41"}],
+            
             sidoList: [],
             gugunList: [],
             dongList: [],
@@ -155,15 +152,13 @@ export default {
             apartList: [],
             apart: {},          
             apartItem : null,   //map에서 보여줄 아파트 위치정보
+            
 
             //detail modal info
             aptCode: "",
             detailModal: null,
 
-
-            //
-            heartType:[ "fa-regular fa-heart", "fa-solid fa-heart"],
-            heartStyle:[ {}, {color:"#ca1a41"}],
+            
 
         };
     },
@@ -263,7 +258,12 @@ export default {
             
             // console.log("getSearchResult :" + data);
 
-            this.apartList = data.list;
+            //리스트 뒤에 데이터 추가
+            data.list.forEach(el => {
+                this.apartList.push(el);
+            })
+
+            //this.apartList = data.list;
             console.log(this.apartList)
 
             this.TOTAL_LIST_ITEM_COUNT = data.count;
@@ -275,6 +275,9 @@ export default {
             this.OFFSET = 0;
             this.CURRENT_PAGE_INDEX = 1;
             this.sortType = "0";
+            this.TOTAL_LIST_ITEM_COUNT= 0;
+            this.apartList = [];
+
             this.getSearchResult();
         }, // end getSearchResultInit
         detailApart: async function (aptCode) {
@@ -305,21 +308,50 @@ export default {
             //this.sidoList = data;
         },
         //검색 결과 리스트 이벤트 등록
-        itemMouseOver : function(event, apart){
-            //event.target.style.background = "gray";
-            //console.log(apart)
-            this.apartItem = apart
+        itemMouseOver : function(apart){
+            this.$refs.MapView.drawCircle(apart);
         },
-        itemMouseOut : function(event){
-            //event.target.style.background = "white";
-            this.apartItem = null;
+        itemMouseOut : function(){
+            this.$refs.MapView.removeCircle();
         },
-        
+        focusApatItem : function(apart){
+            this.$refs.MapView.focusApatItem(apart);
+        },
+
+        //무한스크롤
+        handleNotificationListScroll(e) {
+            if(this.apartList.length == 0) return;
+
+            const { scrollHeight, scrollTop, clientHeight } = e.target;
+            //console.log(scrollHeight + " " + scrollTop + " " + clientHeight)
+            const isAtTheBottom = scrollHeight < (scrollTop + clientHeight + 1);
+            // 일정 이상 밑으로 내려오면 함수 실행 / 반복된 호출을 막기위해 1초마다 스크롤 감지 후 실행
+            if(isAtTheBottom) {
+                console.log("끝입니다.");
+                if(this.TOTAL_LIST_ITEM_COUNT == this.apartList.length) return;
+                setTimeout(() => this.handleLoadMore(), 1000)
+            }
+        },
+
+        // 내려오면 api를 호출하여 아래에 더 추가,
+        handleLoadMore() {
+            console.log("리스트 추가")
+            this.CURRENT_PAGE_INDEX += 1;
+            this.getSearchResult();
+            // api를 호출하여 리스트 추가하면 됨, 현재는 pushList에 1개의 index 추가
+            
+        },
     }, //end methods
 };
 </script>
 
-<style>
+<style scoped>
+.heartIcon {
+    position:absolute;
+    top:10px;
+    left:10px;
+}
+
 .leftSide {
     overflow: scroll;
     -ms-overflow-style: none;
@@ -332,6 +364,10 @@ export default {
 
 .apartItem:hover{
     background: lightgrey;
+}
+
+.detailApartItem:hover{
+    text-decoration-line: underline;
 }
 /* .list-group-item:nth-child(2n) {
     background-color: lightgray;
