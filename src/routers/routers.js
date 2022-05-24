@@ -56,6 +56,6 @@ export default new VueRouter({
             path: '/404',
             component: Error404,
         },
-
+        
     ]
 });
