@@ -105,6 +105,9 @@ export default new Vuex.Store({
         },
         getBoardList : function(state) {
             return state.boardList;
-        }
-    }
+        },
+        getUserInfo(state) {
+            return state.userInfo;
+        },
+    },
 })

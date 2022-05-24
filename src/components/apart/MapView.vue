@@ -28,7 +28,7 @@ export default {
             console.log("initMap");
             return;
         }
-
+        console.log(process.env.VUE_APP_KAKAO_MAP_API_KEY);
         const script = document.createElement("script");
         script.onload = () => kakao.maps.load(this.initMap);
         script.src = "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=" + process.env.VUE_APP_KAKAO_MAP_API_KEY;
@@ -36,8 +36,8 @@ export default {
     },
     watch: {
         apartList: function () {
-            console.log("watch : apartList");
-            console.log(this.apartList);
+            // console.log("watch : apartList");
+            // console.log(this.apartList);
 
             this.displayMarkers();
         },
@@ -66,7 +66,7 @@ export default {
                 let marker = this.addMarker(placePosition, i);
                 let itemEl = this.getListItem(i, places[i]); // 검색 결과 항목 Element를 생성합니다
 
-                console.log(places[i].lat, places[i].lng);
+                // console.log(places[i].lat, places[i].lng);
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
                 // LatLngBounds 객체에 좌표를 추가합니다
                 bounds.extend(placePosition);
@@ -79,7 +79,7 @@ export default {
                     });
 
                     window.kakao.maps.event.addListener($this.map, "click", function () {
-                        console.log($this.customOverlay);
+                        // console.log($this.customOverlay);
                         $this.customOverlay.setMap(null);
                     });
 
