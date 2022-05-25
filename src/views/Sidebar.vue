@@ -28,7 +28,7 @@
                     <font-awesome-icon icon="fa-solid fa-clipboard" />
                 </div>
             </router-link>
-            <router-link to="/404">
+            <router-link to="/user">
                 <div v-if="$store.state.sidebar">
                     <font-awesome-icon icon="fa-solid fa-triangle-exclamation" />
                     <div class="routerLinkTitle">공지사항</div>
@@ -46,7 +46,16 @@
                     <font-awesome-icon icon="fa-solid fa-arrow-right-to-bracket" />
                 </div>
             </router-link>
-            <a @click="logout" v-else style="color: white">
+            <router-link to="/userinfo" v-if="$store.state.isLogin">
+                <div v-if="$store.state.sidebar">
+                    <font-awesome-icon icon="fa-solid fa-user" />
+                    <div class="routerLinkTitle">마이페이지</div>
+                </div>
+                <div v-if="!$store.state.sidebar" title="사용자 정보">
+                    <font-awesome-icon icon="fa-solid fa-user" />
+                </div>
+            </router-link>
+            <a @click="logout" v-if="$store.state.isLogin" style="color: white">
                 <div v-if="$store.state.sidebar">
                     <font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" />
                     <div class="routerLinkTitle">로그아웃</div>
@@ -55,15 +64,6 @@
                     <font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" />
                 </div>
             </a>
-            <router-link to="/userinfo" v-if="$store.state.isLogin">
-                <div v-if="$store.state.sidebar">
-                    <font-awesome-icon icon="fa-solid fa-user" />
-                    <div class="routerLinkTitle">{{ $store.state.userInfo.userId }}</div>
-                </div>
-                <div v-if="!$store.state.sidebar" title="사용자 정보">
-                    <font-awesome-icon icon="fa-solid fa-user" />
-                </div>
-            </router-link>
             <a @click="toggleSidebar" id="toggleIcon">
                 <font-awesome-icon v-if="$store.state.sidebar_arrow"  icon="fa-solid fa-angles-left" />
                 <font-awesome-icon v-if="!$store.state.sidebar_arrow"  icon="fa-solid fa-angles-right" />
