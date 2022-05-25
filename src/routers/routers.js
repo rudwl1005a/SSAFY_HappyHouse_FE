@@ -9,8 +9,9 @@ import Register from '@/views/Register.vue'
 import UserInfo from '@/views/UserInfo.vue'
 import ApartSearch from '@/views/ApartSearch.vue'
 import Board from '@/views/Board.vue'
-
 import Error404 from '@/components/error/404.vue'
+
+import store from "@/store/store.js"
 
 // NavigationDuplicated 에러 해결
 const originalPush = VueRouter.prototype.push;
@@ -34,7 +35,15 @@ export default new VueRouter({
         {
             name: 'ApartSearch',
             path: '/apartsearch',
-            component: ApartSearch
+            component: ApartSearch,
+            beforeEnter: (to, from, next) => {
+                if(!store.state.login.isLogin){
+                    alert('로그인 해 주세요');
+                    next("/login");
+                } else {
+                    return next();
+                }
+            }
         },
         {
             name: 'Register',
@@ -45,11 +54,27 @@ export default new VueRouter({
             name: 'UserInfo',
             path: '/userinfo',
             component: UserInfo,
+            beforeEnter: (to, from, next) => {
+                if(!store.state.login.isLogin){
+                    alert('로그인 해 주세요');
+                    next("/login");
+                } else {
+                    return next();
+                }
+            }
         },
         {
             name: 'Board',
             path: '/board',
             component: Board,
+            beforeEnter: (to, from, next) => {
+                if(!store.state.login.isLogin){
+                    alert('로그인 해 주세요');
+                    next("/login");
+                } else {
+                    return next();
+                }
+            }
         },
         {
             name: 'Error404',

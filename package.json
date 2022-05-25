@@ -22,7 +22,8 @@
     "vue": "^2.6.14",
     "vue-alertify": "^1.1.0",
     "vue-router": "^3.5.3",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

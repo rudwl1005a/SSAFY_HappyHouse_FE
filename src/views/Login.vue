@@ -57,9 +57,6 @@
                                 <button class="btn btn-icon-only btn-pill btn-success me-2" aria-label="naver" title="naver">
                                     <font-awesome-icon icon="fa-solid fa-n" style="color: white" />
                                 </button>
-                                <!-- <button class="btn btn-icon-only btn-pill btn-gray-500 me-2" aria-label="naver" title="naver">
-                                    <font-awesome-icon icon="fa-brands fa-google" style="color: white" />
-                                </button> -->
                             </div>
                             <div class="d-flex justify-content-center align-items-center mt-4">
                                 <span class="fw-normal">
@@ -92,11 +89,19 @@ export default {
     methods: {
         async userLogin() {
             try {
+                setTimeout(100);
                 let response = await http.post("/login", { userId: this.userId, password: this.password });
                 let { data } = response;
+                console.log(data);
 
-                this.$store.commit("LOGIN", { userId: data.userId, userCode: data.userCode, name: data.name, password: data.password });
-                this.$router.push("/");
+                if (data.result == "success"){
+                    this.$store.commit("login/SET_TOKEN", response.headers.authorization);
+                    // console.log(response.headers.authorization);
+                    console.log("token: " + this.$store.state.login.token);
+    
+                    this.$store.commit("login/LOGIN", { userId: data.userId, userCode: data.userCode, name: data.name, password: data.password });
+                    this.$router.push("/");
+                }
             } catch (error) {
                 console.error(error);
                 if (error.response.status == "404") {
