@@ -9,7 +9,38 @@ export default new Vuex.Store({
         sidebar: false,
         sidebar_arrow: false,
         isLogin: false,
-        userInfo: {userId:"123"},
+        userInfo: {},
+
+        // board
+        boardType: '001',  
+        boardList: [],
+        boardStep: 'list',
+        boardDetail: {
+            boardId: 0,
+            title: "",
+            content: "",
+            userName: "",
+            regDt: "",
+            readCount: 0,
+            fileList: [],
+            sameUser: false,
+        },
+        replyNum: 0, // 대댓글 토글을 위한 변수
+
+        pagination: {
+            paginationDiv: "",
+
+            limit: 10,
+            offset: 0,
+            searchWord: "",
+
+            // pagination
+            listRowCount: 10,
+            pageLinkCount: 10,
+            currentPageIndex: 1,
+    
+            totalListItemCount: 0,
+        }
     },
     mutations : {
         CHANGE_MAIN(state, payload) {
@@ -27,7 +58,7 @@ export default new Vuex.Store({
         },
         LOGOUT(state, payload) {
             state.isLogin = false;
-            state.userInfo = [];
+            state.userInfo = {};
         },
         UPDATE_USER(state, payload) {
             state.userInfo = payload;
@@ -35,12 +66,48 @@ export default new Vuex.Store({
         },
         DELETE_USER(state, payload) {
             state.isLogin = false;
-            state.userInfo = [];
+            state.userInfo = {};
+        },
+        CHANGE_BOARD_TYPE(state, payload) {
+            console.log(payload);
+            state.boardType = payload;
+        },
+        CHANGE_BOARDLIST(state, payload) {
+            console.log(payload);
+            state.boardList = payload.list;
+        },
+        CHANGE_BOARD_STEP(state, payload) {
+            state.boardStep = payload;
+        },
+        CHANGE_BOARD_DETAIL(state, payload) {
+            state.boardDetail = payload;
+        },
+        CHANGE_REPLY_NUM(state, payload) {
+            state.replyNum = payload;
+        },
+
+
+        SET_PAGINATION_TOTAL_LIST_ITEM_COUNT(state, count) {
+            state.pagination.totalListItemCount = count;
+        },
+        SET_PGINATION_MOVE_PAGE(state, pageIndex) {
+            state.pagination.offset = (pageIndex - 1) * state.pagination.listRowCount;
+            state.pagination.currentPageIndex = pageIndex;
+        },
+        // page setting
+        SET_PAGINATION_MOVE_PAGE(state, payload) {
+            state.pagination = { payload };
         }
     },
-    getters: {
+    getters : {
+        getBoardType : function(state) {
+            return state.boardType;
+        },
+        getBoardList : function(state) {
+            return state.boardList;
+        },
         getUserInfo(state) {
             return state.userInfo;
         },
-    }
+    },
 })

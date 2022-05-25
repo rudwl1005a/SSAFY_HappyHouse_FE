@@ -114,8 +114,8 @@
 -->
 
 <script>
-import MapView from "../components/apart/MapView.vue";
-import ApartDetailModal from "../components/apart/ApartDetailModal.vue";
+import MapView from "@/components/apart/MapView.vue";
+import ApartDetailModal from "@/components/apart/ApartDetailModal.vue";
 
 import { Modal } from "bootstrap";
 
