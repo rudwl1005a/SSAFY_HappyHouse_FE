@@ -25,7 +25,7 @@ export default new Vuex.Store({
             fileList: [],
             sameUser: false,
         },
-        replyNum: 0,
+        replyNum: 0, // 대댓글 토글을 위한 변수
 
         pagination: {
             paginationDiv: "",
