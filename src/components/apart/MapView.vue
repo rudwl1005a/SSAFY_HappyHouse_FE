@@ -87,6 +87,7 @@ export default {
       shopIcon:{
         "음식" : svgIcon.foodSvg,
         "학문/교육" : svgIcon.studySvg,
+        "지하철" : svgIcon.subwaySvg,
         "소매" : svgIcon.someSvg,
         "관광/여가/오락" : svgIcon.enterSvg,
         "생활서비스" : svgIcon.etcSvg,
@@ -120,7 +121,7 @@ export default {
       this.displayMarkers();
     },
     category : function(){
-        console.log(this.category);
+        //console.log(this.category);
         this.getShopList();
     }
   },
@@ -135,9 +136,16 @@ export default {
       this.map = new kakao.maps.Map(this.mapContainer, this.mapOption);
       // init map
     },
-    noSearchResult: function () {
+    noSearchResult: async function () {
       if (this.map == null) return;
       this.removeMarker();
+
+      // try{
+      //   let response = await http.get("/")
+      // }catch(e){
+      //   console.error(e);
+      // }
+
       let bounds = new kakao.maps.LatLngBounds();
       let placePosition = new kakao.maps.LatLng(37.566826, 126.9786567);
       bounds.extend(placePosition);
@@ -152,7 +160,6 @@ export default {
 
       // 지도에 표시되고 있는 마커를 제거합니다
 
-      let $this = this;
       for (var i = 0; i < places.length; i++) {
         let placePosition = new kakao.maps.LatLng(places[i].lat, places[i].lng);
         let marker = this.addMarker(placePosition, places[i]);
@@ -162,33 +169,7 @@ export default {
         // LatLngBounds 객체에 좌표를 추가합니다
         bounds.extend(placePosition);
 
-        (function (marker, title, code, place) {
-          window.kakao.maps.event.addListener(marker, "mouseover", function () {
-            $this.drawCircle(place);
-          });
-          window.kakao.maps.event.addListener(marker, "mouseout", function () {
-            $this.removeCircle();
-          });
-          window.kakao.maps.event.addListener(marker, "click", function () {
-            $this.focusApatItem(place);
-            $this.getShopList();
-            $this.showCategoryToggle = true;
-            if($this.customOverlay != null){
-                $this.customOverlay.setMap(null);
-                $this.removeCategoryList();
-            }
-
-            $this.displayInfowindow(marker, title, place);
-          });
-          window.kakao.maps.event.addListener($this.map, "click", function () {
-            if($this.customOverlay != null){
-                $this.showCategoryToggle = false;
-                $this.customOverlay.setMap(null);
-                $this.removeCategoryList();
-            }
-          });
-          ////////////////////////////////////////////////////////////////////////////////
-        })(marker, places[i].aptName, places[i].aptCode, places[i]);
+        
         //fragment.appendChild(itemEl);
       }
       // 마커를 생성하고 지도에 표시합니다
@@ -212,8 +193,29 @@ export default {
           image: markerImage,
         });
 
+      marker.data_tag = place.aptName;
       marker.setMap(this.map); // 지도 위에 마커를 표출합니다
       this.markers.push(marker); // 배열에 생성된 마커를 추가합니다
+
+      let $this = this;
+      (function (marker, title, place) {
+          window.kakao.maps.event.addListener(marker, "mouseover", function () {
+            $this.drawCircle(place);
+          });
+          window.kakao.maps.event.addListener(marker, "mouseout", function () {
+            $this.removeCircle();
+          });
+          window.kakao.maps.event.addListener(marker, "click", function () {
+            $this.focusApatItem(place);
+            
+            if($this.customOverlay != null){
+                $this.clearOverlay();
+            }
+
+            $this.displayInfowindow(marker, title, place);
+          });
+        })(marker, place.aptName, place);
+
 
       return marker;
     },
@@ -242,7 +244,7 @@ export default {
     },
     //클릭한 아파트에 포커싱하기
     focusApatItem: function (place) {
-      console.log("해당 마커에 포커싱하기");
+      //console.log("해당 마커에 포커싱하기");
       let placePosition = new kakao.maps.LatLng(place.lat, place.lng);
       let bounds = new kakao.maps.LatLngBounds();
       bounds.extend(placePosition);
@@ -252,39 +254,72 @@ export default {
     },
     //아파트 클릭시 정보 출력
     displayInfowindow: function (marker, title, place) {
+        let customDiv = document.createElement("div");
+        
         var content = `
                 '<div class="overlay_info">
-                    <a href="#" target="_blank">`+ svgIcon.buildingSvg +`<strong>${title}</strong></a>
+                    <a style="color: #fff;">`+ svgIcon.buildingSvg +`<strong>${title}</strong>` + svgIcon.closeIconSvg + `</a>
                     <ul>
-                        <li class="up">
+                        <li class="up" style="border-bottom: 1px solid darkgray;">
                             <span class="title">주소</span>
                             <span class="count">${place.sidoName} ${place.gugunName} ${place.dongName} ${place.jibun}</span>
                         </li>
-                        <li>
+                        <li style="border-bottom: 1px solid darkgray;">  
                             <span class="title">건축년도</span>
                             <span class="count">${place.buildYear}</span>
                         </li>
-                        <li>
-                            <span class="title">건축년도</span>
-                            <span class="count">${place.buildYear}</span>
+                        <li style="border-bottom: 1px solid darkgray;">
+                            <span class="title">최근 거래 금액</span>
+                            <span class="count">${place.recentPrice}</span>
                         </li>
-                    </ul>
-                        <bottun > 주변상권 보기 </bottun>
-                    </div>
+                    </ul> 
+                    <div id="showInfoCloseIcon" >`
+                    + svgIcon.shopArountSvg +`<span class="more-display-shop" style="padding-left: 0px">주변 상권 보기 </span></div>`+  
+                    `</div>
                 </div>
             `;//클릭 이벤트 넣기
+        
+        customDiv.innerHTML = content;
+        let info_overlay = customDiv.firstElementChild;
+        info_overlay.onmouseover = function(){
+          info_overlay.parentNode.parentNode.style.zIndex=999;
+        }
+        info_overlay.onmouseout = function(){
+          info_overlay.parentNode.parentNode.style.zIndex=0;
+        }
+        
+        // $this = this;
+        // console.log(document.querySelector("#showInfoCloseIcon"))
+        // document.querySelector("#showInfoCloseIcon").onclick = function(){
+        //   console.log("icon click")
+        //   $this.removeCategoryList();
+        //   $this.customOverlay.setMap(null);
+        // }
+
+        
         var position = new kakao.maps.LatLng(
             place.lat,
             place.lng
         );
         this.customOverlay = new kakao.maps.CustomOverlay({
             position: position,
-            content: content,
+            content: customDiv,
             //xAnchor: 0.3,
             yAnchor: 1,
         });
         this.customOverlay.setMap(this.map);
+
+        let $this = this;
         
+        this.customOverlay.getContent().firstElementChild.firstElementChild.children[2].onclick = function(){
+          $this.clearOverlay();
+        }
+        this.customOverlay.getContent().firstElementChild.children[2].onclick = function(){
+          $this.getShopList();
+          $this.showCategoryToggle = true;
+        }
+
+        //console.log(this.customOverlay.getContent().firstElementChild.children[2]);
     },
     /////////////////////////////////////////////////////////////////////////
     getShopList: async function(){
@@ -294,16 +329,18 @@ export default {
                 lat : this.focusPlace.lat,
                 lng : this.focusPlace.lng,
             }
-            let response = await http.get("/aparts/shops", { params });
+            let response = await http.get("/aparts/shops", { params, headers: {Authorization: this.$store.state.login.token} });
             let { data } = response;
-            console.log(data);
+            //console.log(data);
 
             if(data.result == 1){
                 this.removeCategoryList();
-                this.shopList = data.list;
+                if(this.category == "지하철") this.shopList = data.subList;
+                else this.shopList = data.list;
                 this.shopList.forEach(shop =>{
                     this.addShopInfo(shop);
                 })
+
             }
             
         }catch(e){
@@ -316,45 +353,76 @@ export default {
       })
     },//end removeCategoryList
     //
-    getIcon : function(category) {
-        if(category == "음식") return svgIcon.foodSvg
-        if(category == "학문/교육") return svgIcon.studySvg
-        //if(category == "") return svgIcon.subwaySvg
-        if(category == "소매") return svgIcon.someSvg
-        if(category == "관광/여가/오락") return svgIcon.enterSvg
-        if(category == "생활서비스") return svgIcon.etcSvg
-    },
     addShopInfo : function(shop){
-        let icon = this.getIcon(shop.commercialName);
-        let color = "";
-        var content = `
-                <div class="overlay-shop-info" style="border: 1px solid ${ this.iconColor[shop.commercialName] };">
-                    <div class="shop-info-icon-div" style="background-color: ${ this.iconColor[shop.commercialName] };">
-                    ${ this.shopIcon[shop.commercialName] }
-                    
-                    </div>
-                    <div class="shop-info-content"> 
-                        <div class="shop-info-title"> <a><stong> ${shop.name} ${shop.branchName} </stong></a>
-                        </div>
-                        <div class="shop-info-sub">${shop.classification}
-                        </div>
-                    </div>
-                </div>`;
+        var content = document.createElement("div");
+        if(this.category == "지하철"){
+            content.innerHTML = `
+            <div class="overlay-shop-info" style="border: 1px solid ${ this.iconColor["지하철"] };" data-lng = "${shop.lng}" data-lat = "${shop.lat}"
+              data-bs-toggle="tooltip" data-bs-placement="right" title="${shop.station} ${shop.line}" data-name="${shop.station} ${shop.line}">
+              <div class="shop-info-icon-div" style="background-color: ${ this.iconColor["지하철"] };">
+                ${ this.shopIcon["지하철"] }
+              </div>
+            </div>`
+        }
+        else{
+            content.innerHTML = `
+          <div class="overlay-shop-info" style="border: 1px solid ${ this.iconColor[shop.commercialName] };" data-lng = "${shop.lng}" data-lat = "${shop.lat}"
+            data-bs-toggle="tooltip" data-bs-placement="right" title="${shop.name} ${shop.branchName}" data-name="${shop.name} ${shop.branchName}">
+            <div class="shop-info-icon-div" style="background-color: ${ this.iconColor[shop.commercialName] };">
+              ${ this.shopIcon[shop.commercialName] }
+            </div>
+          </div>`
+        }
+        let overlay = content.firstElementChild;
+        new bootstrap.Tooltip(overlay);
+
+        overlay.onmouseover = function () {
+          overlay.parentNode.parentNode.style.zIndex=999;
+        }
+        overlay.onmouseout = function () {
+          overlay.parentNode.parentNode.style.zIndex = 0;
+        }
+        overlay.onclick = function () {
+          //console.log(overlay.dataset.name)
+          window.open(`http://map.naver.com/?dlevel=8&lat=${overlay.dataset.lat}&lng=${overlay.dataset.lng}&menu=location&query=${overlay.dataset.name}`);
+        }
         var position = new kakao.maps.LatLng(
             shop.lat,
             shop.lng
         );
+        
         let customOverlay = new kakao.maps.CustomOverlay({
             position: position,
             content: content,
-            xAnchor: 0.1,
-            yAnchor: 1.3,
+            //xAnchor: 0.1,
+            yAnchor: 1.2,
         });
         customOverlay.setMap(this.map);
-        console.log(customOverlay.event);
         this.shopOverlays.push(customOverlay);
 
         
+    },
+    getMarker: function(place){
+      //console.log(place)
+      let $this = this;
+      this.markers.forEach(el => {
+        if(el.data_tag == place.aptName) {
+          el.setMap(null);
+
+          let position = new kakao.maps.LatLng(place.lat, place.lng);
+          el = $this.addMarker(position, place);
+          el.setMap($this.map)
+        }
+      })
+    },
+    clearOverlay: function(){
+      this.showCategoryToggle = false;
+      if(this.map == null) return;
+      this.customOverlay.setMap(null);
+      this.removeCategoryList();
+      
+      // this.shopOverlays = null;
+      // this.customOverlay = null;
     }
   },
 };
@@ -372,6 +440,7 @@ export default {
 }
 .overlaybox li {
     list-style: none;
+    
 }
 .overlay_info {
   border-radius: 6px;
@@ -393,9 +462,6 @@ export default {
 .overlay_info a {
   display: block;
   background: #31316A;
-  background: #31316A
-    url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png)
-    no-repeat right 14px center;
   text-decoration: none;
   color: #fff;
   padding: 12px 36px 12px 14px;
@@ -443,6 +509,16 @@ export default {
     right: 15px;
     font-size: 11px;
 }
+.more-display-shop {
+    font-size: 13px;
+    padding: 5px;
+}
+
+.show-info-close {
+    position: absolute;
+    margin-top: 5px;
+    right: 15px;
+}
 /*                       카테고리                        */
 .showCategory{
     position: absolute;
@@ -471,11 +547,12 @@ export default {
 }
 /*            상권정보                             */
 .overlay-shop-info{
-    width: 200px;
-    border-radius: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     display:inline-block;
     background-color: #f8f8f8;
-    height: 35px;
+    
 }
 /* .overlay-shop-info:after {
   content: '';
@@ -490,20 +567,15 @@ export default {
 	margin-left: -8px;
 	margin-bottom: -6px;
 } */
-.overlay-shop-info :hover {
-    z-index: 2;
-    border-color: black;
-    background-color: black;
-}
 
 .overlay-shop-info:after {
     content: '';
     position: absolute;
-    border-top: 10px solid #f8f8f8;;
+    border-top: 10px solid #f8f8f8;
     border-right: 5px solid transparent;
     border-left: 5px solid transparent;
-    bottom: -3px;
-    left: 10%;
+    bottom: -2px;
+    left: 35%;
 }
 .overlay-shop-info:before {
     content: '';
@@ -511,8 +583,8 @@ export default {
     border-top: 10px solid black;
     border-right: 5px solid transparent;
     border-left: 5px solid transparent;
-    bottom: -4px;
-    left: 10%;
+    bottom: -3px;
+    left: 35%;
 }
 .shop-info-icon-div{
     width: 28px;

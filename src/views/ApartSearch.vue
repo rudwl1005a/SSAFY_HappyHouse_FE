@@ -36,7 +36,7 @@
                 </div>
                 <!--아파트명 검색 창 끝-->
                 <!--검색 결과 정렬 및 관심지역 토글 창 시작-->
-                <div class="row">
+                <div class="row">   <font-awesome-icon icon="fa-solid fa-x" />
                     <div class="col-6  mb-3 pt-1">
                         <select class="col form-select-sm mt-2" v-model="sortType" style="margin-left: -5px;">
                             <option value="0">정렬</option>
@@ -176,7 +176,7 @@ export default {
             this.dong = "0";
 
             if (this.sido != "0") {
-                let response = await http.get("/address/gugun/" + this.sido);
+                let response = await http.get("/address/gugun/" + this.sido, { headers: {Authorization: this.$store.state.login.token}});
                 let { data } = response;
 
                 this.gugunList = data;
@@ -190,7 +190,7 @@ export default {
             this.dong = "0";
 
             if (this.gugun != "0"){
-                let response = await http.get("/address/dong/" + this.gugun);
+                let response = await http.get("/address/dong/" + this.gugun, { headers: {Authorization: this.$store.state.login.token}});
                 let { data } = response;
 
                 console.log(data);
@@ -208,19 +208,24 @@ export default {
             this.getSearchResultInit();
         },
         sortType : function(){
+            this.OFFSET = 0;
+            this.CURRENT_PAGE_INDEX = 1;
+            this.TOTAL_LIST_ITEM_COUNT= 0;
+            this.apartList = [];
+            this.$refs.MapView.clearOverlay();
             this.getSearchResult();
         }
     },
     computed :{
         userInfo :{
             get(){
-                return this.$store.state.userInfo;
+                return this.$store.state.login.userInfo;
             }
         },
     },
     methods: {
         getSido: async function () {
-            let response = await http.get("/address/sido");
+            let response = await http.get("/address/sido", { headers: {Authorization: this.$store.state.login.token}});
             let { data } = response;
 
             this.sidoList = data;
@@ -255,7 +260,7 @@ export default {
         }, //end getURL
         getSearchResult: async function () {
             let url = this.getURL();
-            let response = await http.get(url);
+            let response = await http.get(url, { headers: {Authorization: this.$store.state.login.token}});
             let { data } = response;
             
             // console.log("getSearchResult :" + data);
@@ -279,8 +284,9 @@ export default {
             this.sortType = "0";
             this.TOTAL_LIST_ITEM_COUNT= 0;
             this.apartList = [];
-
+            
             this.getSearchResult();
+            
         }, // end getSearchResultInit
         detailApart: async function (aptCode) {
             this.aptCode = aptCode;
@@ -292,10 +298,10 @@ export default {
         changeInterestApart : async function (apart) {
             let response = null;
             if(apart.isUserInterest == 1){
-                response = await http.delete("/" + this.userInfo.userId + "/interest/aparts/" + apart.aptCode);
+                response = await http.delete("/" + this.userInfo.userId + "/interest/aparts/" + apart.aptCode, { headers: {Authorization: this.$store.state.login.token}});
             }
             else{
-                response = await http.post("/" + this.userInfo.userId + "/interest/aparts", {userId : this.userInfo.userId, aptCode : apart.aptCode});
+                response = await http.post("/" + this.userInfo.userId + "/interest/aparts", {userId : this.userInfo.userId, aptCode : apart.aptCode, headers: {Authorization: this.$store.state.login.token}});
             }
             
             let { data } = response;
@@ -305,6 +311,7 @@ export default {
                 if(this.interestToggle){
                     this.getSearchResult();
                 }
+                this.$refs.MapView.getMarker(apart);
             }
             //this.getSearchResult();
             //this.sidoList = data;
@@ -317,6 +324,7 @@ export default {
             this.$refs.MapView.removeCircle();
         },
         focusApatItem : function(apart){
+            this.$refs.MapView.clearOverlay();
             this.$refs.MapView.focusApatItem(apart);
         },
 

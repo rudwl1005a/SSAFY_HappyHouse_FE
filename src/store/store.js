@@ -8,8 +8,11 @@ export default new Vuex.Store({
         mainDiv: false, // true일때 크고, false일때 작다
         sidebar: false,
         sidebar_arrow: false,
-        isLogin: false,
-        userInfo: {},
+        login:{
+          isLogin: false,
+          userInfo: { userId:"123"},
+        },
+        
 
         // board
         boardType: '001',  
