@@ -4,17 +4,17 @@
             <div class="col-12 col-xl-4">
                 <div class="row">
                     <div class="col-12 mb-4">
-                        <div class="card shadow border-0 text-center p-0">
-                            <div class="profile-cover rounded-top" data-background="../assets/img/profile-cover.jpg"></div>
+                        <div class="card shadow border-0 text-center p-0" style="height: 407px;">
+                            <div class="profile-cover rounded-top" :style="inlineStyle"></div>
                             <div class="card-body pb-5">
-                                <img src="../assets/img/team/profile-picture-1.jpg" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait" />
-                                <h4 class="h3">{{ $store.state.userInfo.name }}</h4>
-                                <h5 class="fw-normal">Junior Web BackEnd Engineer</h5>
-                                <button class="btn btn-sm btn-info d-inline-flex align-items-center me-2">
+                                <img src="../assets/img/noProfile.png" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait" />
+                                <h4 class="h3">{{ $store.state.login.userInfo.name }}</h4>
+                                <h5 class="fw-normal">{{ introduce }}</h5>
+                                <button class="btn btn-sm btn-info d-inline-flex align-items-center me-2 animate-up-2" @click="disabled = (disabled + 1) % 2">
                                     <font-awesome-icon icon="fa-solid fa-user-pen" style="margin-right: 5px" />
                                     회원 수정
                                 </button>
-                                <button class="btn btn-sm btn-danger d-inline-flex align-items-center me-2">
+                                <button class="btn btn-sm btn-danger d-inline-flex align-items-center me-2 animate-up-2">
                                     <font-awesome-icon icon="fa-solid fa-user-large-slash" style="margin-right: 5px" />
                                     회원 탈퇴
                                 </button>
@@ -24,45 +24,36 @@
                 </div>
             </div>
             <div class="col-12 col-xl-8">
-                <div class="card card-body border-0 shadow mb-4">
+                <div class="card card-body border-0 shadow mb-4" style="height: 407px;">
                     <h2 class="h5 mb-4">User information</h2>
                     <form>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div>
-                                    <label for="first_name">First Name</label>
-                                    <input class="form-control" id="first_name" type="text" placeholder="Enter your first name" required />
+                                    <label for="first_name">Name</label>
+                                    <input class="form-control" v-model="name" type="text"  required :disabled="disabled == 1"/>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div>
-                                    <label for="last_name">Last Name</label>
-                                    <input class="form-control" id="last_name" type="text" placeholder="Also your last name" required />
+                                    <label for="last_name">Password</label>
+                                    <input class="form-control" v-model="password" type="password" required :disabled="disabled == 1"/>
                                 </div>
                             </div>
                         </div>
-                        <div class="row align-items-center">
+                        <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="birthday">Birthday</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                fill-rule="evenodd"
-                                                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                                                clip-rule="evenodd"
-                                            ></path>
-                                        </svg>
-                                    </span>
-                                    <input data-datepicker="" class="form-control" id="birthday" type="text" placeholder="dd/mm/yyyy" required />
+                                <div class="form-group">
+                                    <label for="email">Introduce</label>
+                                    <input class="form-control" v-model="introduce" type="text" :disabled="disabled == 1"/>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="gender">Gender</label>
-                                <select class="form-select mb-0" id="gender" aria-label="Gender select example">
-                                    <option selected>Gender</option>
-                                    <option value="1">Female</option>
-                                    <option value="2">Male</option>
+                                <select class="form-select mb-0" v-model="gender" aria-label="Gender select example" :disabled="disabled == 1">
+                                    <option value="" disabled>Gender</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Male">Male</option>
                                 </select>
                             </div>
                         </div>
@@ -70,18 +61,17 @@
                             <div class="col-md-6 mb-3">
                                 <div class="form-group">
                                     <label for="email">Email</label>
-                                    <input class="form-control" id="email" type="email" placeholder="name@company.com" required />
+                                    <input class="form-control" v-model="email" type="email" :disabled="disabled == 1"/>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="form-group">
                                     <label for="phone">Phone</label>
-                                    <input class="form-control" id="phone" type="number" placeholder="+12-345 678 910" required />
+                                    <input class="form-control" v-model="phone" type="text" :disabled="disabled == 1"/>
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-gray-800 mt-3 animate-up-2" type="submit">Save all</button>
-                        <!-- <button class="btn btn-gray-800 mt-3 animate-up-2" type="submit" style="display: inline-block; float: right;">Save all</button> -->
+                        <button class="btn btn-gray-800 mt-3 animate-up-2" type="submit" :disabled="disabled == 1" @click="updateUserInfo" style="display: inline-block; float: right;">Save all</button>
                     </form>
                 </div>
             </div>
@@ -153,55 +143,78 @@
 </template>
 
 <script>
+import Vue from "vue";
+import VueAlertify from "vue-alertify";
+
+Vue.use(VueAlertify);
+
+import http from "@/common/axios.js";
+
 export default {
     data() {
         return {
-            BoardList: [
-                {
-                    boardId: "1",
-                    // title: "1번 제목",
-                    title: "1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목1번 제목",
-                    writer: "1번 작성자",
-                    regDt: "2022-05-20",
-                    readCount: "1",
-                },
-                {
-                    boardId: "2",
-                    title: "2번 제목",
-                    writer: "2번 작성자",
-                    regDt: "2022-05-20",
-                    readCount: "2",
-                },
-                {
-                    boardId: "3",
-                    title: "3번 제목",
-                    writer: "3번 작성자",
-                    regDt: "2022-05-20",
-                    readCount: "3",
-                },
-                {
-                    boardId: "4",
-                    title: "4번 제목",
-                    writer: "4번 작성자",
-                    regDt: "2022-05-20",
-                    readCount: "4",
-                },
-                {
-                    boardId: "5",
-                    title: "5번 제목",
-                    writer: "5번 작성자",
-                    regDt: "2022-05-20",
-                    readCount: "5",
-                },
-                {
-                    boardId: "5",
-                    title: "5번 제목",
-                    writer: "5번 작성자",
-                    regDt: "2022-05-20",
-                    readCount: "5",
-                },
-            ],
+            userId: '',
+            password: '',
+            name: '',
+            introduce: 'aasdfdasfsadfasdfsdfsfsadfsda ',
+            gender: '',
+            email: '',
+            phone: '',
+
+            disabled: 1,
+
+            BoardList: [],
         };
+    },
+    methods: {
+        async userUpdate() {
+            let updateObj = {
+                userId: this.userId,
+                password: this.password,
+                name: this.name,
+            };
+            console.log(updateObj);
+            try {
+                let { data } = await http.put("/users/" + this.userId, updateObj);
+                console.log(data);
+                this.$store.commit("login/UPDATE_USER", updateObj);
+                this.$alertify.alert("success!", "회원 수정을 완료하였습니다.");
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async userDelete() {
+            try {
+                let { data } = await http.delete("/users/" + this.userId);
+                console.log(data);
+                this.$store.commit("login/DELETE_USER");
+                this.$alertify.alert("success!", "회원 탈퇴를 완료하였습니다.");
+                this.$router.push("/");
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        modifyUserInfo() {
+            this.validated = false;
+        },
+        async updateUserInfo(){
+            alert(this.name + " " + this.password + " " + this.introduce + " " + this.gender + " " + this.email +  " " + this.phone)
+        }
+    },
+    computed: {
+        bgImage() {
+            return require("../assets/img/profile-cover.jpg");
+        },
+        inlineStyle() {
+            return {
+                backgroundImage: `url(${this.bgImage})`,
+            };
+        },
+    },
+    created() {
+        this.userId = this.$store.state.login.userInfo.userId;
+        this.password = this.$store.state.login.userInfo.password;
+        this.name = this.$store.state.login.userInfo.name;
     },
 };
 </script>

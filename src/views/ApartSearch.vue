@@ -214,7 +214,7 @@ export default {
     computed :{
         userInfo :{
             get(){
-                return this.$store.state.userInfo;
+                return this.$store.state.login.userInfo;
             }
         },
     },

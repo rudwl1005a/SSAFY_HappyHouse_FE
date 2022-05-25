@@ -28,16 +28,7 @@
                     <font-awesome-icon icon="fa-solid fa-clipboard" />
                 </div>
             </router-link>
-            <router-link to="/user">
-                <div v-if="$store.state.sidebar">
-                    <font-awesome-icon icon="fa-solid fa-triangle-exclamation" />
-                    <div class="routerLinkTitle">공지사항</div>
-                </div>
-                <div v-if="!$store.state.sidebar" title="공지사항">
-                    <font-awesome-icon icon="fa-solid fa-triangle-exclamation" />
-                </div>
-            </router-link>
-            <router-link to="/login" v-if="!$store.state.isLogin">
+            <router-link to="/login" v-if="!$store.state.login.isLogin">
                 <div v-if="$store.state.sidebar">
                     <font-awesome-icon icon="fa-solid fa-arrow-right-to-bracket" />
                     <div class="routerLinkTitle">로그인</div>
@@ -46,7 +37,7 @@
                     <font-awesome-icon icon="fa-solid fa-arrow-right-to-bracket" />
                 </div>
             </router-link>
-            <router-link to="/userinfo" v-if="$store.state.isLogin">
+            <router-link to="/userinfo" v-if="$store.state.login.isLogin">
                 <div v-if="$store.state.sidebar">
                     <font-awesome-icon icon="fa-solid fa-user" />
                     <div class="routerLinkTitle">마이페이지</div>
@@ -55,7 +46,7 @@
                     <font-awesome-icon icon="fa-solid fa-user" />
                 </div>
             </router-link>
-            <a @click="logout" v-if="$store.state.isLogin" style="color: white">
+            <a @click="logout" v-if="$store.state.login.isLogin" style="color: white">
                 <div v-if="$store.state.sidebar">
                     <font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" />
                     <div class="routerLinkTitle">로그아웃</div>
@@ -73,6 +64,12 @@
 </template>
 
 <script>
+import Vue from "vue";
+import VueAlertify from "vue-alertify";
+Vue.use(VueAlertify);
+
+import http from "@/common/axios.js";
+
 export default {
     methods: {
         toggleSidebar() {
@@ -91,14 +88,25 @@ export default {
                 this.$store.commit("CHANGE_SIDEBAR_ARROW", false);
             }
         },
-        logout() {
-            this.$store.commit("LOGOUT");
-            this.$router.push("/");
+        async logout() {
+            try {
+                let response = await http.post("/logout");
+                let { data } = response;
+                console.log(data);
+
+                this.$store.commit("login/SET_TOKEN", undefined);
+                console.log(this.$store.state.login.token);
+                this.$store.commit("login/LOGOUT");
+                this.$router.push("/");
+            } catch (error) {
+                console.error(error);
+                this.$alertify.error("서버에 오류가 발생했습니다.");
+            }
         },
         changeMenu(menu){
             console.log(menu);
             this.$store.commit("CHANGE_MENU", menu);
-        }
+        },
     },
 };
 </script>

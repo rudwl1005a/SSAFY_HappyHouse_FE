@@ -42,7 +42,7 @@ export default {
             let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
 
             try {
-                let { data } = await http.get("/freeboards" + urlParams);
+                let { data } = await http.get("/freeboards" + urlParams, { headers: { Authorization: this.$store.state.login.token } });
                 console.log(data);
 
                 if (data.result == 1) {
@@ -53,8 +53,13 @@ export default {
                     this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
                 }
             } catch (error) {
-                console.error(error);
-                this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
+                if (error.response.status == "500") {
+                    this.$alertify.error("로그인 해 주세요.");
+                    this.$router.push("/login");
+                } else {
+                    console.error(error);
+                    this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
+                }
             }
         },
         async qnaBoard() {
@@ -64,7 +69,7 @@ export default {
             let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
 
             try {
-                let { data } = await http.get("/qnaboards" + urlParams);
+                let { data } = await http.get("/qnaboards" + urlParams, { headers: { Authorization: this.$store.state.login.token } });
                 console.log(data);
 
                 if (data.result == 1) {
@@ -75,8 +80,13 @@ export default {
                     this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
                 }
             } catch (error) {
-                console.error(error);
-                this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
+                if (error.response.status == "500") {
+                    this.$alertify.error("로그인 해 주세요.");
+                    this.$router.push("/login");
+                } else {
+                    console.error(error);
+                    this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
+                }
             }
         },
         async noticeBoard() {
@@ -86,7 +96,7 @@ export default {
             let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
 
             try {
-                let { data } = await http.get("/noticeboards" + urlParams);
+                let { data } = await http.get("/noticeboards" + urlParams, { headers: { Authorization: this.$store.state.login.token } });
                 console.log(data);
 
                 if (data.result == 1) {
@@ -97,14 +107,19 @@ export default {
                     this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
                 }
             } catch (error) {
-                console.error(error);
-                this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
+                // if (error.response.status == "500") {
+                //     this.$alertify.error("로그인 해 주세요.");
+                //     this.$router.push("/login");
+                // } else {
+                    console.error(error);
+                    this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
+                // }
             }
         },
         async boardDetail(boardId) {
             console.log(boardId);
             try {
-                let response = await http.get('/boards/' + boardId);
+                let response = await http.get('/boards/' + boardId, { headers: { Authorization: this.$store.state.login.token } });
                 let { data } = response;
                 console.log(data);
 
@@ -139,6 +154,8 @@ export default {
         } else if (this.$store.state.boardType == "003") {
             this.noticeBoard();
         }
+
+        console.log(this.$store.state.login.token);
     },
 };
 </script>
