@@ -9,7 +9,7 @@
                                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
                             </svg>
                         </span>
-                        <input type="text" class="form-control" placeholder="Search boards" />
+                        <input type="text" class="form-control" placeholder="Search boards" v-model="searchWord" @keyup="searchBoard"/>
                     </div>
                 </div>
             </div>
@@ -47,7 +47,8 @@
                 </tbody>
             </table>
             <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
-                <nav aria-label="Page navigation example">
+                <pagination v-on:call-parent="movePage"></pagination>
+                <!-- <nav aria-label="Page navigation example">
                     <ul class="pagination mb-0">
                         <li class="page-item">
                             <a class="page-link" href="#">Prev</a>
@@ -71,7 +72,7 @@
                             <a class="page-link" href="#">Next</a>
                         </li>
                     </ul>
-                </nav>
+                </nav> -->
                 <button @click="changeWrite" class="btn btn-tertiary" type="button">글 쓰기</button>
             </div>
         </div>
@@ -84,16 +85,118 @@ import VueAlertify from "vue-alertify";
 Vue.use(VueAlertify);
 
 import http from "@/common/axios.js";
+import Pagination from  "@/components/Pagination.vue";
 
 export default {
+    components: { Pagination },
+    data() {
+        return {
+            searchWord: ''
+        }
+    },
     methods: {
+        // pagination
+        movePage(pageIndex) {
+            console.log("BoardMainVue : movePage : pageIndex : " + pageIndex);
+
+            this.$store.commit("SET_PAGINATION_MOVE_PAGE", pageIndex);
+
+            this.searchBoard();
+        },
         changeWrite() {
             this.$store.commit("CHANGE_BOARD_STEP", "write");
         },
         boardDetail(boardId){
             console.log(boardId);
             this.$emit('boardDetail', boardId);
-        }
+        },
+        searchBoard(){
+            if (this.$store.state.boardType == '001'){
+                this.$store.commit("SET_SEARCHWORD", this.searchWord);
+                this.freeBoard();
+            } else if (this.$store.state.boardType == '002'){
+                this.$store.commit("SET_SEARCHWORD", this.searchWord);
+                this.qnaBoard();
+            } else if (this.$store.state.boardType == '003'){
+                this.$store.commit("SET_SEARCHWORD", this.searchWord);
+                this.noticeBoard();
+            }
+        },
+        async freeBoard() {
+            let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
+            
+            try {
+                let { data } = await http.get("/freeboards" + urlParams, { headers: { Authorization: this.$store.state.login.token } });
+                console.log(data);
+
+                if (data.result == 1) {
+                    this.$store.commit("CHANGE_BOARDLIST", data);
+                    this.$store.commit("SET_PAGINATION_TOTAL_LIST_ITEM_COUNT", data.count);
+                } else {
+                    this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
+                }
+
+                this.$store.state.pagination.searchWord = '';
+            } catch (error) {
+                if (error.response.status == "500") {
+                    this.$alertify.error("로그인 해 주세요.");
+                    this.$router.push("/login");
+                } else {
+                    console.error(error);
+                    this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
+                }
+            }
+        },
+        async qnaBoard() {
+            let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
+
+            try {
+                let { data } = await http.get("/qnaboards" + urlParams, { headers: { Authorization: this.$store.state.login.token } });
+                console.log(data);
+
+                if (data.result == 1) {
+                    this.$store.commit("CHANGE_BOARDLIST", data);
+                    this.$store.commit("SET_PAGINATION_TOTAL_LIST_ITEM_COUNT", data.count);
+                } else {
+                    this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
+                }
+            } catch (error) {
+                if (error.response.status == "500") {
+                    this.$alertify.error("로그인 해 주세요.");
+                    this.$router.push("/login");
+                } else {
+                    console.error(error);
+                    this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
+                }
+            }
+        },
+        async noticeBoard() {
+            let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
+
+            try {
+                let { data } = await http.get("/noticeboards" + urlParams, { headers: { Authorization: this.$store.state.login.token } });
+                console.log(data);
+
+                if (data.result == 1) {
+                    this.$store.commit("CHANGE_BOARDLIST", data);
+                    this.$store.commit("SET_PAGINATION_TOTAL_LIST_ITEM_COUNT", data.count);
+                } else {
+                    this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
+                }
+            } catch (error) {
+                // if (error.response.status == "500") {
+                //     this.$alertify.error("로그인 해 주세요.");
+                //     this.$router.push("/login");
+                // } else {
+                    console.error(error);
+                    this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
+                // }
+            }
+        },
+        // mounted() {
+        //     this.$store.state.pagination.searchWord = '';
+        //     this.searchWord = '';
+        // }
     },
     filters: {
         // filter로 쓸 filter ID 지정

@@ -7,14 +7,14 @@
                         <div class="card shadow border-0 text-center p-0" style="height: 407px;">
                             <div class="profile-cover rounded-top" :style="inlineStyle"></div>
                             <div class="card-body pb-5">
-                                <img src="../assets/img/noProfile.png" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait" />
-                                <h4 class="h3">{{ $store.state.login.userInfo.name }}</h4>
-                                <h5 class="fw-normal">{{ introduce }}</h5>
+                                <img src="../assets/img/profile.jpg" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait" />
+                                <h4 class="h3">{{ $store.state.login.userInfo.userId }}</h4>
+                                <h5 class="fw-normal">{{ $store.state.login.userInfo.introduce }}</h5>
                                 <button class="btn btn-sm btn-info d-inline-flex align-items-center me-2 animate-up-2" @click="disabled = (disabled + 1) % 2">
                                     <font-awesome-icon icon="fa-solid fa-user-pen" style="margin-right: 5px" />
                                     회원 수정
                                 </button>
-                                <button class="btn btn-sm btn-danger d-inline-flex align-items-center me-2 animate-up-2">
+                                <button class="btn btn-sm btn-danger d-inline-flex align-items-center me-2 animate-up-2" @click="confirmDelete">
                                     <font-awesome-icon icon="fa-solid fa-user-large-slash" style="margin-right: 5px" />
                                     회원 탈퇴
                                 </button>
@@ -71,7 +71,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-gray-800 mt-3 animate-up-2" type="submit" :disabled="disabled == 1" @click="updateUserInfo" style="display: inline-block; float: right;">Save all</button>
+                        <button class="btn btn-gray-800 mt-3 animate-up-2" type="submit" :disabled="disabled == 1" @click="userUpdate" style="display: inline-block; float: right;">Save all</button>
                     </form>
                 </div>
             </div>
@@ -156,7 +156,7 @@ export default {
             userId: '',
             password: '',
             name: '',
-            introduce: 'aasdfdasfsadfasdfsdfsfsadfsda ',
+            introduce: '',
             gender: '',
             email: '',
             phone: '',
@@ -172,6 +172,10 @@ export default {
                 userId: this.userId,
                 password: this.password,
                 name: this.name,
+                introduce: this.introduce,
+                gender: this.gender,
+                email: this.email,
+                phone: this.phone,
             };
             console.log(updateObj);
             try {
@@ -179,9 +183,23 @@ export default {
                 console.log(data);
                 this.$store.commit("login/UPDATE_USER", updateObj);
                 this.$alertify.alert("success!", "회원 수정을 완료하였습니다.");
+                this.disabled = (this.disabled + 1) % 2;
             } catch (error) {
                 console.error(error);
             }
+        },
+        confirmDelete() {
+            var $this = this;
+            this.$alertify.confirmWithTitle(
+                "탈퇴 확인",
+                "정말로 탈퇴하시겠습니까?",
+                function () {
+                    $this.userDelete();
+                },
+                function () {
+                    console.log("cancel");
+                }
+            );
         },
         async userDelete() {
             try {
@@ -197,9 +215,6 @@ export default {
         modifyUserInfo() {
             this.validated = false;
         },
-        async updateUserInfo(){
-            alert(this.name + " " + this.password + " " + this.introduce + " " + this.gender + " " + this.email +  " " + this.phone)
-        }
     },
     computed: {
         bgImage() {
@@ -215,6 +230,10 @@ export default {
         this.userId = this.$store.state.login.userInfo.userId;
         this.password = this.$store.state.login.userInfo.password;
         this.name = this.$store.state.login.userInfo.name;
+        this.introduce = this.$store.state.login.userInfo.introduce;
+        this.email = this.$store.state.login.userInfo.email;
+        this.gender = this.$store.state.login.userInfo.gender;
+        this.phone = this.$store.state.login.userInfo.phone;
     },
 };
 </script>

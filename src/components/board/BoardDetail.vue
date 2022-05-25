@@ -31,15 +31,13 @@
             </table>
         </div>
         <div>
-            <!-- <button v-show="$store.state.boardDetail.sameUser" @click="changeToUpdate" class="btn btn-info" type="button">글 수정하기</button>
-            <button v-show="$store.state.boardDetail.sameUser" @click="changeToDelete" class="btn btn-danger" type="button">글 삭제하기</button> -->
-            <button style="float: right" @click="changeToDelete" class="btn btn-danger me-3" type="button">
-                <font-awesome-icon icon="fa-solid fa-eraser" class="me-1"/>
-                삭제하기
+            <button style="float: right" @click="deleteBoard" v-show="$store.state.boardDetail.userId == $store.state.login.userInfo.userId" 
+                    class="btn btn-danger me-3" type="button">
+                <font-awesome-icon icon="fa-solid fa-eraser" class="me-1"/> 삭제하기
             </button>
-            <button style="float: right;" @click="changeToUpdate" class="btn btn-info me-3" type="button">
-                <font-awesome-icon icon="fa-solid fa-pen-to-square" class="me-1"/>
-                수정하기
+            <button style="float: right;" @click="updateBoard" v-show="$store.state.boardDetail.userId == $store.state.login.userInfo.userId" 
+                    class="btn btn-info me-3" type="button">
+                <font-awesome-icon icon="fa-solid fa-pen-to-square" class="me-1"/> 수정하기
             </button>
         </div>
         <div class="input-group p-3">
@@ -56,7 +54,6 @@
                 <span class="ms-4" style="color: lightgray; font-size: 12px; cursor: pointer" @click="makeRereply(reply.comment_id)"> 답글 </span>
                 <div class="pt-3 pb-3 ps-5">
                     <span>{{ reply.comment }}</span>
-                    <!-- <span class="me-3" style="float: right; text-align: end; font-size: 12px; color: lightgray; cursor: pointer">답글</span> -->
                 </div>
                 <div v-for="(rereply, index2) in rereplyList" :key="index2">
                     <div v-show="rereply.parent_id == reply.comment_id" class="pt-2 ms-4" style="border-top: 1px solid #ececec; background-color: #f8f8f8;">
@@ -155,10 +152,11 @@ export default {
         }
     },
     methods: {
-        changeToUpdate() {
-            this.$emit("call-parent-change-to-update");
+        updateBoard() {
+            // console.log(1);
+            this.$store.commit("CHANGE_BOARD_STEP", "update");
         },
-        changeToDelete() {
+        deleteBoard() {
             this.$emit("call-parent-change-to-delete");
         },
         makeRereply(commentId){

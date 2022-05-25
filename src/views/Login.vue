@@ -111,6 +111,20 @@ export default {
                 }
             }
         },
+        async logout() {
+            try {
+                let response = await http.post("/logout");
+                let { data } = response;
+                console.log(data);
+
+                this.$store.commit("login/SET_TOKEN", undefined);
+                console.log(this.$store.state.login.token);
+                this.$store.commit("login/LOGOUT");
+            } catch (error) {
+                console.error(error);
+                this.$alertify.error("서버에 오류가 발생했습니다.");
+            }
+        },
         authInst() {
             // eslint-disable-next-line
             console.log(gapi.auth2.getAuthInstance());
@@ -126,6 +140,9 @@ export default {
             };
         },
     },
+    mounted(){
+        this.logout();
+    }
 };
 </script>
 

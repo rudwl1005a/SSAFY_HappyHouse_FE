@@ -13,9 +13,10 @@
         <board-write v-if="$store.state.boardStep == 'write'"
                     @freeBoard="freeBoard" @qnaBoard="qnaBoard" @noticeBoard="noticeBoard">
         </board-write>
-        <board-detail v-if="$store.state.boardStep == 'detail'"
-                    @:call-parent-change-to-update="changeToUpdate" @:call-parent-change-to-delete="changeToDelete">
-        </board-detail>
+        <board-detail v-if="$store.state.boardStep == 'detail'"></board-detail>
+        <board-update v-if="$store.state.boardStep == 'update'"
+                    @freeBoard="freeBoard" @qnaBoard="qnaBoard" @noticeBoard="noticeBoard">
+        </board-update>
     </div>
 </template>
 
@@ -28,9 +29,10 @@ import http from "@/common/axios.js";
 import BoardList from "@/components/board/BoardList.vue";
 import BoardWrite from "@/components/board/BoardWrite.vue";
 import BoardDetail from "@/components/board/BoardDetail.vue";
+import BoardUpdate from "@/components/board/BoardUpdate.vue";
 
 export default {
-    components: { BoardList, BoardWrite, BoardDetail },
+    components: { BoardList, BoardWrite, BoardDetail, BoardUpdate },
     data() {
         return {};
     },
@@ -38,6 +40,7 @@ export default {
         async freeBoard() {
             this.$store.commit("CHANGE_BOARD_TYPE", "001");
             this.$store.commit("CHANGE_BOARD_STEP", "list");
+            this.$store.commit("SET_PAGINATION_DEFAULT");
 
             let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
 
@@ -47,8 +50,7 @@ export default {
 
                 if (data.result == 1) {
                     this.$store.commit("CHANGE_BOARDLIST", data);
-                    // TOTAL_LIST_ITEM_COUNT = data.count;
-                    // addPagination();
+                    this.$store.commit("SET_PAGINATION_TOTAL_LIST_ITEM_COUNT", data.count);
                 } else {
                     this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
                 }
@@ -65,6 +67,7 @@ export default {
         async qnaBoard() {
             this.$store.commit("CHANGE_BOARD_TYPE", "002");
             this.$store.commit("CHANGE_BOARD_STEP", "list");
+            this.$store.commit("SET_PAGINATION_DEFAULT");
 
             let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
 
@@ -74,8 +77,7 @@ export default {
 
                 if (data.result == 1) {
                     this.$store.commit("CHANGE_BOARDLIST", data);
-                    // TOTAL_LIST_ITEM_COUNT = data.count;
-                    // addPagination();
+                    this.$store.commit("SET_PAGINATION_TOTAL_LIST_ITEM_COUNT", data.count);
                 } else {
                     this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
                 }
@@ -92,6 +94,7 @@ export default {
         async noticeBoard() {
             this.$store.commit("CHANGE_BOARD_TYPE", "003");
             this.$store.commit("CHANGE_BOARD_STEP", "list");
+            this.$store.commit("SET_PAGINATION_DEFAULT");
 
             let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
 
@@ -101,8 +104,7 @@ export default {
 
                 if (data.result == 1) {
                     this.$store.commit("CHANGE_BOARDLIST", data);
-                    // TOTAL_LIST_ITEM_COUNT = data.count;
-                    // addPagination();
+                    this.$store.commit("SET_PAGINATION_TOTAL_LIST_ITEM_COUNT", data.count);
                 } else {
                     this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
                 }
@@ -138,12 +140,6 @@ export default {
             } catch(error) {
                 console.error(error);
             }
-        },
-        changeToUpdate() {
-            console.log('changeToUpdate');
-        },
-        changeToDelete() {
-            console.log('changeToDelete');
         },
     },
     created() {

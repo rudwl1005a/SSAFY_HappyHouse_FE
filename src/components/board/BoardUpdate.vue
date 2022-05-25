@@ -8,7 +8,7 @@
                     </router-link>
                 </li>
                 <li class="breadcrumb-item"><a @click="backToList">{{ $store.state.boardType == '001' ? '자유게시판' : $store.state.boardType == '002' ? 'QnA' : '공지사항' }}</a></li>
-                <li class="breadcrumb-item active" aria-current="page">글 작성</li>
+                <li class="breadcrumb-item active" aria-current="page">글 수정</li>
             </ol>
         </nav>
         <div class="m-3">
@@ -19,7 +19,7 @@
         </div>
         <div>
             <button @click="cancel" class="btn btn-tertiary m-3" type="button" style="float: right">취소</button>
-            <button @click="insertValidate" class="btn btn-tertiary mt-3 ml-3 mr-3" type="button" style="float: right">등록</button>
+            <button @click="updateValidate" class="btn btn-tertiary mt-3 ml-3 mr-3" type="button" style="float: right">수정</button>
         </div>
     </div>
 </template>
@@ -45,10 +45,10 @@ export default {
         cancel() {
             this.$store.state.boardStep = "list";
         },
-        insertValidate() {
+        updateValidate() {
             if (this.title != "" && this.title.length != 0){
                 if(this.CKEditor.getData().length != 0){
-                    this.boardInsert();
+                    this.boardUpdate();
                 } else {
                     this.$alertify.error("내용을 작성해 주세요");
                 }
@@ -56,19 +56,22 @@ export default {
                 this.$alertify.error("제목을 작성해 주세요");
             }
         },
-        async boardInsert() {
-            let wirteobj = { 
+        async boardUpdate() {
+            let wirteObj = { 
+                boardId: this.$store.state.boardDetail.boardId,
                 userId: this.$store.state.login.userInfo.userId, 
                 boardCode: this.$store.state.boardType, 
-                title: this.title, 
+                title: this.title,
                 content: this.CKEditor.getData() 
             };
 
+            console.log(wirteObj);
+
             try {
-                let { data } = await http.post("/boards", wirteobj, { headers: { Authorization: this.$store.state.login.token } });
+                let { data } = await http.put("/boards/" + this.$store.state.boardDetail.boardId, wirteObj, { headers: { Authorization: this.$store.state.login.token } });
 
                 console.log(data);
-                this.$alertify.success("글이 등록되었습니다.");
+                this.$alertify.success("글이 수정되었습니다.");
 
                 // list 갱신
                 if (this.$store.state.boardType == "001") {
@@ -83,6 +86,7 @@ export default {
             } catch (error) {
                 console.log(error);
             }
+            
         },
         backToList() {
             this.$store.commit('CHANGE_BOARD_STEP', 'list');
@@ -91,9 +95,12 @@ export default {
     async mounted() {
         try {
             this.CKEditor = await ClassicEditor.create(document.querySelector("#divEditorInsert"));
+            this.title = this.$store.state.boardDetail.title;
+            this.CKEditor.setData(this.$store.state.boardDetail.content);
         } catch (error) {
             console.error(error);
         }
+        
     },
 };
 </script>
