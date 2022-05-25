@@ -145,28 +145,28 @@ export default {
 //
     displayInfowindow: function (marker, title, place) {
       var content = `
-		<div class="overlaybox">
-			<div class="boxtitle">${title}</div>
-			<div class="first"><img src="${this.root}/img/apt.png" style="width:247px; height:136px;" alt=""></div>
-			<ul>
-				<li class="up">
-					<span class="title">건축년도</span>
-					<span class="count">${place.buildYear}</span>
-				</li>
-				<li>
-					<span class="title">주소</span>
-					<span class="count">${place.sidoName} ${place.gugunName} ${place.dongName} ${place.jibun}</span>
-				</li>
-				<li>
-					<span class="title">최신거래금액</span>
-					<span class="count">${place.recentPrice}</span>
-				</li>
-				<li>
-					<span class="last" id="recenthistor" data-toggle="modal" data-target="#myModal">아파트정보 update</span>
-				</li>
-			</ul>
-		</div>
-	`;
+          <div class="overlaybox">
+            <div class="boxtitle">${title}</div>
+            <div class="first"><img src="${this.root}/img/apt.png" style="width:247px; height:136px;" alt=""></div>
+            <ul>
+              <li class="up">
+                <span class="title">건축년도</span>
+                <span class="count">${place.buildYear}</span>
+              </li>
+              <li>
+                <span class="title">주소</span>
+                <span class="count">${place.sidoName} ${place.gugunName} ${place.dongName} ${place.jibun}</span>
+              </li>
+              <li>
+                <span class="title">최신거래금액</span>
+                <span class="count">${place.recentPrice}</span>
+              </li>
+              <li>
+                <span class="last" id="recenthistor" data-toggle="modal" data-target="#myModal">아파트정보 update</span>
+              </li>
+            </ul>
+          </div>
+        `;
       var position = new kakao.maps.LatLng(
         marker.getPosition().getLat() + 0.00033,
         marker.getPosition().getLng() - 0.00003
