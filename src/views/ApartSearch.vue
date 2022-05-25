@@ -2,7 +2,7 @@
     <div :class="{ 'change-big': $store.state.mainDiv, 'change-small': !$store.state.mainDiv }" style="min-height: 935px;">
         <map-view :apartList="apartList" ref="MapView"></map-view>
         <!--시구동 검색 창 시작-->
-        <div class="card col-sm-12" style="min-height: 935px; z-index: 1; position: absolute; top: 0; right: 0; z-index: 1; width: 400px">
+        <div class="card col-sm-12" style="min-height: 935px; z-index: 1; position: absolute; top: 0; right: 0; z-index: 3; width: 400px">
             <div class="card-body">
                 <div class="row">
                     <div class="col form-group form-inline justify-content-center">
@@ -80,7 +80,8 @@
                             {{ apart.buildYear }}년 건축, <span class="detailApartItem" @click.stop="detailApart(apart.aptCode)">거래 내역 {{apart.dealCount}}건</span>
                         </small> 
                         <div class="small d-flex mt-1" v-if="apart.dealCount">                               
-                            <div>최근 거래 {{apart.recentPrice}}만원, 최고가 {{apart.maxPrice}}만원 <svg class="icon icon-xs text-success" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg><span class="text-success fw-bolder">4%</span></div>
+                            <div><span>최근 거래 {{apart.recentPrice}}만원</span><br>
+                            <span class="text-success fw-bolder" style="font-size:15px;">최고가 {{apart.maxPrice}}만원</span></div>
                         </div>
                     </div>
                     <div>
@@ -236,6 +237,7 @@ export default {
             }
             url+="&sortType="+ this.sortType;
 
+
             if (this.dong != "0") {
                 url += "&dongCode=" + this.dong;
             } else if (this.gugun != "0") {
@@ -327,7 +329,7 @@ export default {
             const isAtTheBottom = scrollHeight < (scrollTop + clientHeight + 1);
             // 일정 이상 밑으로 내려오면 함수 실행 / 반복된 호출을 막기위해 1초마다 스크롤 감지 후 실행
             if(isAtTheBottom) {
-                console.log("끝입니다.");
+                //console.log("끝입니다.");
                 if(this.TOTAL_LIST_ITEM_COUNT == this.apartList.length) return;
                 setTimeout(() => this.handleLoadMore(), 1000)
             }
