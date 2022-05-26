@@ -68,7 +68,7 @@ export default {
             console.log(wirteObj);
 
             try {
-                let { data } = await http.put("/boards/" + this.$store.state.boardDetail.boardId, wirteObj, { headers: { Authorization: this.$store.state.login.token } });
+                let { data } = await http.put("/boards/" + this.$store.state.boardDetail.boardId, wirteObj);
 
                 console.log(data);
                 this.$alertify.success("글이 수정되었습니다.");

@@ -42,7 +42,7 @@
                     <font-awesome-icon icon="fa-solid fa-user-plus" />
                     <div class="routerLinkTitle">회원가입</div>
                 </div>
-                <div v-if="!$store.state.sidebar" title="로그인">
+                <div v-if="!$store.state.sidebar" title="회원가입">
                     <font-awesome-icon icon="fa-solid fa-user-plus" />
                 </div>
             </router-link>

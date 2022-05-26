@@ -47,7 +47,7 @@ export default {
             let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
 
             try {
-                let { data } = await http.get("/freeboards" + urlParams, { headers: { Authorization: this.$store.state.login.token } });
+                let { data } = await http.get("/freeboards" + urlParams);
                 console.log(data);
 
                 if (data.result == 1) {
@@ -74,7 +74,7 @@ export default {
             let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
 
             try {
-                let { data } = await http.get("/qnaboards" + urlParams, { headers: { Authorization: this.$store.state.login.token } });
+                let { data } = await http.get("/qnaboards" + urlParams);
                 console.log(data);
 
                 if (data.result == 1) {
@@ -101,7 +101,7 @@ export default {
             let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
 
             try {
-                let { data } = await http.get("/noticeboards" + urlParams, { headers: { Authorization: this.$store.state.login.token } });
+                let { data } = await http.get("/noticeboards" + urlParams);
                 console.log(data);
 
                 if (data.result == 1) {
@@ -123,7 +123,7 @@ export default {
         async boardDetail(boardId) {
             console.log(boardId);
             try {
-                let response = await http.get('/boards/' + boardId, { headers: { Authorization: this.$store.state.login.token } });
+                let response = await http.get('/boards/' + boardId);
                 let { data } = response;
                 console.log(data);
 

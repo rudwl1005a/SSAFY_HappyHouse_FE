@@ -251,7 +251,7 @@ export default {
         async boardDetail(boardId, boardCode) {
             console.log(boardId + " " + boardCode);
             try {
-                let response = await http.get('/boards/' + boardId, { headers: { Authorization: this.$store.state.login.token } });
+                let response = await http.get('/boards/' + boardId);
                 let { data } = response;
                 console.log(data);
 
