@@ -17,7 +17,6 @@
                             <div class="text-center text-md-center mb-4 mt-md-0">
                                 <h1 class="mb-0 h3">Login</h1>
                             </div>
-                            <form action="#" class="mt-4">
                                 <!-- Form -->
                                 <div class="form-group mb-4">
                                     <label for="email">Your ID</label>
@@ -44,9 +43,8 @@
                                     </div>
                                 </div>
                                 <div class="d-grid">
-                                    <button @click="userLogin" type="submit" class="btn btn-gray-800 mt-2">login</button>
+                                    <button @click="userLogin" class="btn btn-gray-800 mt-2">login</button>
                                 </div>
-                            </form>
                             <div class="mt-3 mb-4 text-center">
                                 <span class="fw-normal">or login with</span>
                             </div>

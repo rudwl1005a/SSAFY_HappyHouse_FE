@@ -176,7 +176,7 @@ export default {
             this.dong = "0";
 
             if (this.sido != "0") {
-                let response = await http.get("/address/gugun/" + this.sido, { headers: {Authorization: this.$store.state.login.token}});
+                let response = await http.get("/address/gugun/" + this.sido);
                 let { data } = response;
 
                 this.gugunList = data;
@@ -190,7 +190,7 @@ export default {
             this.dong = "0";
 
             if (this.gugun != "0"){
-                let response = await http.get("/address/dong/" + this.gugun, { headers: {Authorization: this.$store.state.login.token}});
+                let response = await http.get("/address/dong/" + this.gugun);
                 let { data } = response;
 
                 console.log(data);
@@ -225,7 +225,7 @@ export default {
     },
     methods: {
         getSido: async function () {
-            let response = await http.get("/address/sido", { headers: {Authorization: this.$store.state.login.token}});
+            let response = await http.get("/address/sido");
             let { data } = response;
 
             this.sidoList = data;
@@ -298,10 +298,10 @@ export default {
         changeInterestApart : async function (apart) {
             let response = null;
             if(apart.isUserInterest == 1){
-                response = await http.delete("/" + this.userInfo.userId + "/interest/aparts/" + apart.aptCode, { headers: {Authorization: this.$store.state.login.token}});
+                response = await http.delete("/" + this.userInfo.userId + "/interest/aparts/" + apart.aptCode);
             }
             else{
-                response = await http.post("/" + this.userInfo.userId + "/interest/aparts", {userId : this.userInfo.userId, aptCode : apart.aptCode, headers: {Authorization: this.$store.state.login.token}});
+                response = await http.post("/" + this.userInfo.userId + "/interest/aparts", {userId : this.userInfo.userId, aptCode : apart.aptCode});
             }
             
             let { data } = response;

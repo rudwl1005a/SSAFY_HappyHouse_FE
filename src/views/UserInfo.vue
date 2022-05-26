@@ -174,7 +174,7 @@ export default {
             let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
             
             try {
-                let { data } = await http.get("/myboards" + urlParams, { headers: { Authorization: this.$store.state.login.token } });
+                let { data } = await http.get("/myboards" + urlParams);
                 console.log(data);
 
                 if (data.result == 1) {
