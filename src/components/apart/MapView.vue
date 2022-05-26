@@ -418,7 +418,8 @@ export default {
     clearOverlay: function(){
       this.showCategoryToggle = false;
       if(this.map == null) return;
-      this.customOverlay.setMap(null);
+      if(this.customOverlay != null)
+        this.customOverlay.setMap(null);
       this.removeCategoryList();
       
       // this.shopOverlays = null;
