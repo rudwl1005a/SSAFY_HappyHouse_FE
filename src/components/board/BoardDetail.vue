@@ -56,16 +56,16 @@
         <div class="input-group p-3">
             <span class="ms-3 pt-3 pb-3 input-group-text">{{ $store.state.login.userInfo.userId }}</span>
             <!-- <span class="m-3">  </span> -->
-            <input @keydown.enter="reply" v-model="replyComment" style="margin-right: 0" type="text" class="form-control" placeholder="댓글을 달아주세요.." aria-label="댓글을 달아주세요.." aria-describedby="button-addon2">
-            <button @click="reply" class="btn btn-tertiary" type="button">등록</button>
+            <input @keydown.enter="insertReply" v-model="replyComment" style="margin-right: 0" type="text" class="form-control" placeholder="댓글을 달아주세요.." aria-label="댓글을 달아주세요.." aria-describedby="button-addon2">
+            <button @click="insertReply" class="btn btn-tertiary" type="button">등록</button>
         </div>
         <hr class="ms-3 me-3">
         <div class="replyList">
             <div v-for="(reply, index) in replyList" :key="index" class="m-3">
                 <span class="ms-3" style="font-size: 18px; color: navy"><strong>{{ reply.userId }}</strong></span>
-                <span class="ms-2" style="color: lightgray">( {{ reply.regDt }} )</span>
-                <span class="ms-4" style="color: lightgray; font-size: 12px; cursor: pointer" @click="makeRereply(reply.comment_id)"> 답글 </span>
-                <span class="ms-4" style="color: lightgray; font-size: 12px; cursor: pointer" v-if="reply.userId == $store.state.login.userInfo.userId" @click="deleteReply(reply.comment_id)"> 삭제 </span>
+                <span class="ms-2" style="color: lightgray">( {{ reply.regDt | yyyyMMdd }} )</span>
+                <span class="ms-4" style="color: lightgray; font-size: 12px; cursor: pointer" @click="makeRereply(reply.commentId)"> 답글 </span>
+                <span class="ms-4" style="color: lightgray; font-size: 12px; cursor: pointer" v-if="reply.userId == $store.state.login.userInfo.userId" @click="deleteReply(reply.commentId)"> 삭제 </span>
                 <div class="pt-3 pb-3 ps-5">
                     <span>{{ reply.content }}</span>
                 </div>
@@ -73,19 +73,19 @@
                     <div v-show="rereply.parentId == reply.commentId" class="pt-2 ms-4" style="border-top: 1px solid #ececec; background-color: #f8f8f8;">
                         <font-awesome-icon icon="fa-solid fa-arrow-turn-up" style="transform: rotate(90deg); margin: auto 0" class="ms-3"/>
                         <span class="ms-3" style="font-size: 18px; color: navy"><strong>{{ rereply.userId }}</strong></span>
-                        <span class="ms-2" style="color: lightgray">( {{ rereply.regDt }} )</span>
-                        <span class="ms-4" style="color: lightgray; font-size: 12px; cursor: pointer" v-if="rereply.userId == $store.state.login.userInfo.userId" @click="deleteRereply(rereply.comment_id)"> 삭제 </span>
+                        <span class="ms-2" style="color: lightgray">( {{ rereply.regDt | yyyyMMdd }} )</span>
+                        <span class="ms-4" style="color: lightgray; font-size: 12px; cursor: pointer" v-if="rereply.userId == $store.state.login.userInfo.userId" @click="deleteRereply(rereply.commentId)"> 삭제 </span>
                         <div class="pt-3 pb-3">
                             <span class="ms-5">{{ rereply.content }}</span>
                         </div>
                     </div>
                 </div>
-                <div v-if="$store.state.replyNum == reply.comment_id" class="m-4">
+                <div v-if="$store.state.replyNum == reply.commentId" class="m-4">
                     <div class="input-group pt-2" style="border-top: 1px solid #ececec">
                         <font-awesome-icon icon="fa-solid fa-arrow-turn-up" style="transform: rotate(90deg); margin: auto 0" class="ms-3"/>
                         <span class="ms-3 pt-3 pb-3 input-group-text" style="border-radius: 8px 0 0px 8px">{{ $store.state.login.userInfo.userId }}</span>
-                        <input @keydown.enter="rereply(reply.comment_id)" v-model="rereplyComment" style="margin-right: 0" type="text" class="form-control" placeholder="댓글을 달아주세요.." aria-label="댓글을 달아주세요.." aria-describedby="button-addon2">
-                        <button @click.stop="rereply(reply.comment_id)" class="btn btn-tertiary" style="margin-right: 10px" type="button">등록</button>
+                        <input @keydown.enter="insertRereply(reply.commentId)" v-model="rereplyComment" style="margin-right: 0" type="text" class="form-control" placeholder="댓글을 달아주세요.." aria-label="댓글을 달아주세요.." aria-describedby="button-addon2">
+                        <button @click.stop="insertRereply(reply.commentId)" class="btn btn-tertiary" style="margin-right: 10px" type="button">등록</button>
                     </div>
                 </div>
                 <hr class="me-1">
@@ -109,8 +109,20 @@ export default {
         return {
             replyComment: '',
             rereplyComment: '',
-            replyList: [],
-            rereplyList: [],
+            // replyList: [],
+            // rereplyList: [],
+        }
+    },
+    computed: {
+        replyList :{
+            get() {
+                return this.$store.state.boardDetail.commentList;
+            },
+        },
+        rereplyList : {
+            get() {
+                return this.$store.state.boardDetail.recommentList;
+            }
         }
     },
     methods: {
@@ -148,17 +160,112 @@ export default {
                 this.$store.commit('CHANGE_REPLY_NUM', commentId);
             }
         },
-        async reply(){
-            alert("board_id : " + this.$store.state.boardDetail.boardId + " / " + this.replyComment);
+        async insertReply(){
+            let commentObj = {
+                boardId: this.$store.state.boardDetail.boardId,
+                userId: this.$store.state.login.userInfo.userId,
+                content: this.replyComment,
+            };
+
+            try {
+                let { data } = await http.post("/comments/" + this.$store.state.boardDetail.boardId, commentObj);
+                console.log(data);
+
+                if (data == "success") {
+                    this.$emit('refreshBoardDetail', this.$store.state.boardDetail.boardId);
+                    this.replyComment= '';
+
+                    this.$alertify.success("댓글을 작성하였습니다.");
+                } else {
+                    this.$alertify.error("댓글 작성 과정에 문제가 생겼습니다.");
+                }
+            } catch (error) {
+                if (error.response.status == "500") {
+                    this.$alertify.error("로그인 해 주세요.");
+                    this.$router.push("/login");
+                } else {
+                    console.error(error);
+                    this.$alertify.error("댓글 작성 과정에 문제가 생겼습니다.");
+                }
+            }
         },
-        async rereply(commentId) {
-            alert("comment_id : " + commentId + " / " + this.rereplyComment);
+        async insertRereply(commentId) {
+            let commentObj = {
+                boardId: this.$store.state.boardDetail.boardId,
+                userId: this.$store.state.login.userInfo.userId,
+                parentId: commentId,
+                content: this.rereplyComment,
+            };
+
+            try {
+                let { data } = await http.post("/comments/" + this.$store.state.boardDetail.boardId, commentObj);
+                console.log(data);
+
+                if (data == "success") {
+                    this.$emit('refreshBoardDetail', this.$store.state.boardDetail.boardId);
+                    this.rereplyComment= '';
+
+                    this.$alertify.success("댓글을 작성하였습니다.");
+
+                    this.$store.commit('CHANGE_REPLY_NUM', 0);
+                } else {
+                    this.$alertify.error("댓글 작성 과정에 문제가 생겼습니다.");
+                }
+            } catch (error) {
+                if (error.response.status == "500") {
+                    this.$alertify.error("로그인 해 주세요.");
+                    this.$router.push("/login");
+                } else {
+                    console.error(error);
+                    this.$alertify.error("댓글 작성 과정에 문제가 생겼습니다.");
+                }
+            }
         },
         async deleteReply(commentId){
-            alert("delete reply : " + commentId);
+            try {
+                let { data } = await http.delete("/comments/" + commentId);
+                console.log(data);
+
+                if (data == "success") {
+                    this.$emit('refreshBoardDetail', this.$store.state.boardDetail.boardId);
+                    this.rereplyComment= '';
+
+                    this.$alertify.success("댓글을 삭제하였습니다.");
+                } else {
+                    this.$alertify.error("댓글 삭제 과정에 문제가 생겼습니다.");
+                }
+            } catch (error) {
+                if (error.response.status == "500") {
+                    this.$alertify.error("로그인 해 주세요.");
+                    this.$router.push("/login");
+                } else {
+                    console.error(error);
+                    this.$alertify.error("댓글 삭제 과정에 문제가 생겼습니다.");
+                }
+            }
         },
         async deleteRereply(commentId){
-            alert("delete rereply : " + commentId);
+            try {
+                let { data } = await http.delete("/comments/re/" + commentId);
+                console.log(data);
+
+                if (data == "success") {
+                    this.$emit('refreshBoardDetail', this.$store.state.boardDetail.boardId);
+                    this.rereplyComment= '';
+
+                    this.$alertify.success("댓글을 삭제하였습니다.");
+                } else {
+                    this.$alertify.error("댓글 삭제 과정에 문제가 생겼습니다.");
+                }
+            } catch (error) {
+                if (error.response.status == "500") {
+                    this.$alertify.error("로그인 해 주세요.");
+                    this.$router.push("/login");
+                } else {
+                    console.error(error);
+                    this.$alertify.error("댓글 삭제 과정에 문제가 생겼습니다.");
+                }
+            }
         },
         backToList(){
             this.$store.commit("CHANGE_BOARD_STEP", "list");
@@ -198,9 +305,6 @@ export default {
         this.replyList = this.$store.state.boardDetail.commentList;
         this.rereplyList = this.$store.state.boardDetail.recommentList;
     },
-    create() {
-        
-    }
 
 };
 </script>

@@ -13,7 +13,8 @@
         <board-write v-if="$store.state.boardStep == 'write'"
                     @freeBoard="freeBoard" @qnaBoard="qnaBoard" @noticeBoard="noticeBoard">
         </board-write>
-        <board-detail v-if="$store.state.boardStep == 'detail'"></board-detail>
+        <board-detail v-if="$store.state.boardStep == 'detail'"
+                    @refreshBoardDetail="boardDetail"></board-detail>
         <board-update v-if="$store.state.boardStep == 'update'"
                     @freeBoard="freeBoard" @qnaBoard="qnaBoard" @noticeBoard="noticeBoard">
         </board-update>
@@ -141,7 +142,6 @@ export default {
                     console.log(this.$store.state.boardDetail.commentList);
                     console.log(this.$store.state.boardDetail.recommentList);
 
-
                     this.$store.commit('CHANGE_BOARD_STEP', "detail");
                 }
             } catch(error) {
@@ -159,6 +159,9 @@ export default {
             this.noticeBoard();
         } else if (this.$store.state.boardType == "004") {
             this.$store.commit('CHANGE_BOARD_TYPE', "003");
+            this.$store.commit('CHANGE_BOARD_STEP', "detail");
+        } else if (this.$store.state.boardType == "005") {
+            this.$store.commit('CHANGE_BOARD_TYPE', "001");
             this.$store.commit('CHANGE_BOARD_STEP', "detail");
         } else if (this.$store.state.boardType == "006") {
 
