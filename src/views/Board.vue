@@ -160,6 +160,9 @@ export default {
         } else if (this.$store.state.boardType == "004") {
             this.$store.commit('CHANGE_BOARD_TYPE', "003");
             this.$store.commit('CHANGE_BOARD_STEP', "detail");
+        } else if (this.$store.state.boardType == "005") {
+            this.$store.commit('CHANGE_BOARD_TYPE', "001");
+            this.$store.commit('CHANGE_BOARD_STEP', "detail");
         } else if (this.$store.state.boardType == "006") {
 
             if (this.$store.state.boardUserType == "001") {

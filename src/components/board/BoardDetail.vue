@@ -206,6 +206,8 @@ export default {
                     this.rereplyComment= '';
 
                     this.$alertify.success("댓글을 작성하였습니다.");
+
+                    this.$store.commit('CHANGE_REPLY_NUM', 0);
                 } else {
                     this.$alertify.error("댓글 작성 과정에 문제가 생겼습니다.");
                 }
