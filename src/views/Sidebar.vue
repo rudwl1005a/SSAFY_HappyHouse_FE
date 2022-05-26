@@ -37,6 +37,15 @@
                     <font-awesome-icon icon="fa-solid fa-arrow-right-to-bracket" />
                 </div>
             </router-link>
+            <router-link to="/register" v-if="!$store.state.login.isLogin">
+                <div v-if="$store.state.sidebar">
+                    <font-awesome-icon icon="fa-solid fa-user-plus" />
+                    <div class="routerLinkTitle">회원가입</div>
+                </div>
+                <div v-if="!$store.state.sidebar" title="로그인">
+                    <font-awesome-icon icon="fa-solid fa-user-plus" />
+                </div>
+            </router-link>
             <router-link to="/userinfo" v-if="$store.state.login.isLogin">
                 <div v-if="$store.state.sidebar">
                     <font-awesome-icon icon="fa-solid fa-user" />

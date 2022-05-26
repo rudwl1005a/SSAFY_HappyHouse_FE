@@ -4,7 +4,7 @@ import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex);
 
-import login from "@/store/modules/login.js"; 
+import login from "@/store/modules/login.js";
 
 export default new Vuex.Store({
   modules: {
@@ -30,10 +30,12 @@ export default new Vuex.Store({
       userName: "",
       regDt: "",
       readCount: 0,
-      fileList: [],
       sameUser: false,
+      commentList: [],
+      recommentList: [],
     },
     replyNum: 0, // 대댓글 토글을 위한 변수
+    boardUserType: '',
 
     pagination: {
       paginationDiv: "",
@@ -77,17 +79,38 @@ export default new Vuex.Store({
     CHANGE_REPLY_NUM(state, payload) {
       state.replyNum = payload;
     },
+    CHANGE_BOARD_DEFAULT(state, payload) {
+      state.boardStep = 'list';
+      state.boardType = '001';
+    },
+    CHANGE_BOARD_USER_TYPE(state, payload) {
+      state.boardUserType = payload;
+    },
+    CHANGE_BOARD_REPLY(state, payload) {
+      state.boardDetail.commentList = payload;
+    },
+    CHANGE_BOARD_REREPLY(state, payload) {
+      state.boardDetail.recommentList = payload;
+    },
     //////////////////////// pagination ////////////////////////////////
     SET_PAGINATION_TOTAL_LIST_ITEM_COUNT(state, count) {
       state.pagination.totalListItemCount = count;
     },
-    SET_PGINATION_MOVE_PAGE(state, pageIndex) {
+    SET_PAGINATION_MOVE_PAGE(state, pageIndex) {
       state.pagination.offset = (pageIndex - 1) * state.pagination.listRowCount;
       state.pagination.currentPageIndex = pageIndex;
     },
-    // page setting
-    SET_PAGINATION_MOVE_PAGE(state, payload) {
-      state.pagination = { payload };
+    SET_PAGINATION_DEFAULT(state, payload){
+      state.pagination.limit = 10;
+      state.pagination.offset = 0;
+      state.pagination.currentPageIndex = 1;
+    },
+    // // page setting
+    // SET_PAGINATION_MOVE_PAGE(state, payload) {
+    //   state.pagination = { payload };
+    // },
+    SET_SEARCHWORD(state, searchWord) {
+      state.pagination.searchWord = searchWord;
     }
   },
   getters: {
@@ -110,31 +133,19 @@ export default new Vuex.Store({
       if (state.pagination.currentPageIndex % state.pagination.pageLinkCount == 0) {
         //10, 20...맨마지막
         return (
-          (state.pagination.currentPageIndex / state.pagination.pageLinkCount - 1) *
-          state.pagination.pageLinkCount +
-          1
-        );
+          (state.pagination.currentPageIndex / state.pagination.pageLinkCount - 1) * state.pagination.pageLinkCount + 1 );
       } else {
         return (
-          Math.floor(state.pagination.currentPageIndex / state.pagination.pageLinkCount) *
-          state.pagination.pageLinkCount +
-          1
-        );
+          Math.floor(state.pagination.currentPageIndex / state.pagination.pageLinkCount) * state.pagination.pageLinkCount + 1 );
       }
     },
     getEndPageIndex: function (state, getters) {
       let ret = 0;
       if (state.pagination.currentPageIndex % state.pagination.pageLinkCount == 0) {
         //10, 20...맨마지막
-        ret =
-          (state.pagination.currentPageIndex / state.pagination.pageLinkCount - 1) *
-          state.pagination.pageLinkCount +
-          state.pagination.pageLinkCount;
+        ret = (state.pagination.currentPageIndex / state.pagination.pageLinkCount - 1) * state.pagination.pageLinkCount + state.pagination.pageLinkCount;
       } else {
-        ret =
-          Math.floor(state.pagination.currentPageIndex / state.pagination.pageLinkCount) *
-          state.pagination.pageLinkCount +
-          state.pagination.pageLinkCount;
+        ret = Math.floor(state.pagination.currentPageIndex / state.pagination.pageLinkCount) * state.pagination.pageLinkCount + state.pagination.pageLinkCount;
       }
       // 위 오류나는 코드를 아래와 같이 비교해서 처리
       return ret > getters.getPageCount ? getters.getPageCount : ret;
@@ -147,11 +158,7 @@ export default new Vuex.Store({
       }
     },
     getNext: function (state, getters) {
-      if (
-        Math.floor(getters.getPageCount / state.pagination.pageLinkCount) *
-        state.pagination.pageLinkCount <
-        state.pagination.currentPageIndex
-      ) {
+      if ( Math.floor(getters.getPageCount / state.pagination.pageLinkCount) * state.pagination.pageLinkCount <  state.pagination.currentPageIndex ) {
         return false;
       } else {
         return true;
