@@ -41,30 +41,17 @@ instance.interceptors.response.use(
         console.error("================================")
         console.log("인터셉터 리스폰 : " + response.config.url);
         console.log(response)
-        if(response.config.url == "/login" && response.status == 200){
-            getToken(response.data)
-        }
+        // if(response.config.url == "/login" && response.status == 200){
+        //     getToken(response.data)
+        // }
         console.error("================================")
         return response;
         
     },
     function (error) {
-        errorController(error);
+        console.log(error)
     }
 );
 
   
 export default instance;
-
-
-
-// export default axios.create({
-//     //baseURL: 'http://3.34.190.221:8080',
-//     baseURL: 'http://localhost:8080',
-//     headers: { 
-//         'Content-type': 'application/json' ,
-//         Authorization: token
-//     },
-//     //withCredentials : true,
-// })
-

@@ -131,14 +131,14 @@ export default {
       this.markers = [];
     },
     getListItem : function(index, place) {
-	var el = document.createElement("li");
-	var itemStr = `
-		<span class="markerbg marker_${index + 1}></span>
-		<div class="info"><h5>${place.aptName}</h5> <button>관심등록</button>
-		<span>${place.sidoName} ${place.gugunName} ${place.dongName} ${place.jibun}</span>
-	`;
-	el.innerHTML = itemStr;
-	el.className = "item";
+      var el = document.createElement("li");
+      var itemStr = `
+        <span class="markerbg marker_${index + 1}></span>
+        <div class="info"><h5>${place.aptName}</h5> <button>관심등록</button>
+        <span>${place.sidoName} ${place.gugunName} ${place.dongName} ${place.jibun}</span>
+      `;
+      el.innerHTML = itemStr;
+      el.className = "item";
 
 	return el;
 },
