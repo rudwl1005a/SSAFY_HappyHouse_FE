@@ -17,7 +17,7 @@
                             <div class="text-center text-md-center mb-4 mt-md-0">
                                 <h1 class="mb-0 h3">Create Account</h1>
                             </div>
-                            <form action="#" class="mt-4">
+                            <!-- <form action="#" class="mt-4"> -->
                                 <!-- Form -->
                                 <div class="form-group mb-3">
                                     <label for="email">Your ID</label>
@@ -69,9 +69,9 @@
                                     <!-- End of Form -->
                                 </div>
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-gray-800 mt-3" @click="regist">Sign up</button>
+                                    <button class="btn btn-gray-800 mt-3" @click="regist">Sign up</button>
                                 </div>
-                            </form>
+                            <!-- </form> -->
                             <div class="mt-3 mb-4 text-center">
                                 <span class="fw-normal">or login with</span>
                             </div>

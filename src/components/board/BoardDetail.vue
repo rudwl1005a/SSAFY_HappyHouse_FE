@@ -119,7 +119,7 @@ export default {
         },
         async deleteBoard() {
             try {
-                let { data } = await http.delete("/boards/" + this.$store.state.boardDetail.boardId, { headers: { Authorization: this.$store.state.login.token } });
+                let { data } = await http.delete("/boards/" + this.$store.state.boardDetail.boardId);
                 console.log(data);
 
                 if (data.result == 1) {

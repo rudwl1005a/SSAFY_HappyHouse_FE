@@ -174,7 +174,7 @@ export default {
             let urlParams = "?limit=" + this.$store.state.pagination.listRowCount + "&offset=" + this.$store.state.pagination.offset + "&searchWord=" + this.$store.state.pagination.searchWord;
             
             try {
-                let { data } = await http.get("/myboards" + urlParams, { headers: { Authorization: this.$store.state.login.token } });
+                let { data } = await http.get("/myboards" + urlParams);
                 console.log(data);
 
                 if (data.result == 1) {
@@ -251,7 +251,7 @@ export default {
         async boardDetail(boardId, boardCode) {
             console.log(boardId + " " + boardCode);
             try {
-                let response = await http.get('/boards/' + boardId, { headers: { Authorization: this.$store.state.login.token } });
+                let response = await http.get('/boards/' + boardId);
                 let { data } = response;
                 console.log(data);
 
