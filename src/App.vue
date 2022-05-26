@@ -2,11 +2,11 @@
     <div id="app" style="overflow-x: hidden">
         <side-bar></side-bar>
         <router-view/>
-        <div class="chat-div">
+        <!-- <div class="chat-div">
             <textarea v-model="chatMesseges" style="height:300px;"></textarea>
             <textarea class="form-control" placeholder="Leave a comment here" v-model="chatMessege"></textarea>
             <button @click="send" @keydown.enter="send">전송</button>
-        </div>
+        </div> -->
     </div>
 </template>
 

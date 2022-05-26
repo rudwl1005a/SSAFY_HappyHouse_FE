@@ -13,7 +13,8 @@
         <board-write v-if="$store.state.boardStep == 'write'"
                     @freeBoard="freeBoard" @qnaBoard="qnaBoard" @noticeBoard="noticeBoard">
         </board-write>
-        <board-detail v-if="$store.state.boardStep == 'detail'"></board-detail>
+        <board-detail v-if="$store.state.boardStep == 'detail'"
+                    @refreshBoardDetail="boardDetail"></board-detail>
         <board-update v-if="$store.state.boardStep == 'update'"
                     @freeBoard="freeBoard" @qnaBoard="qnaBoard" @noticeBoard="noticeBoard">
         </board-update>
@@ -140,7 +141,6 @@ export default {
                     console.warn("lists:")
                     console.log(this.$store.state.boardDetail.commentList);
                     console.log(this.$store.state.boardDetail.recommentList);
-
 
                     this.$store.commit('CHANGE_BOARD_STEP', "detail");
                 }

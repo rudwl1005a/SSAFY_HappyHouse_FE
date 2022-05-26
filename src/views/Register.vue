@@ -72,7 +72,7 @@
                                     <button class="btn btn-gray-800 mt-3" @click="regist">Sign up</button>
                                 </div>
                             <!-- </form> -->
-                            <div class="mt-3 mb-4 text-center">
+                            <!-- <div class="mt-3 mb-4 text-center">
                                 <span class="fw-normal">or login with</span>
                             </div>
                             <div class="d-flex justify-content-center my-4">
@@ -82,7 +82,7 @@
                                 <a href="#" class="btn btn-icon-only btn-pill btn-success me-2" aria-label="naver" title="naver">
                                     <font-awesome-icon icon="fa-solid fa-n" style="color: white" />
                                 </a>
-                            </div>
+                            </div> -->
                             <div class="d-flex justify-content-center align-items-center mt-4">
                                 <span class="fw-normal">
                                     Already have an account?

@@ -47,7 +47,7 @@
                                     <button @click="userLogin" class="btn btn-gray-800 mt-2">login</button>
                                 </div>
                             <!-- </form> -->
-                            <div class="mt-3 mb-4 text-center">
+                            <!-- <div class="mt-3 mb-4 text-center">
                                 <span class="fw-normal">or login with</span>
                             </div>
                             <div class="d-flex justify-content-center my-4">
@@ -57,7 +57,7 @@
                                 <button class="btn btn-icon-only btn-pill btn-success me-2" aria-label="naver" title="naver">
                                     <font-awesome-icon icon="fa-solid fa-n" style="color: white" />
                                 </button>
-                            </div>
+                            </div> -->
                             <div class="d-flex justify-content-center align-items-center mt-4">
                                 <span class="fw-normal">
                                     Not registered?
@@ -115,11 +115,11 @@ export default {
                 }
             } catch (error) {
                 console.error(error);
-                if (error.response.status == "404") {
-                    this.$alertify.error("이메일 또는 비밀번호를 확인하세요.");
-                } else {
-                    this.$alertify.error("서버에 오류가 발생했습니다.");
-                }
+                // if (error.response.status == "404") {
+                //     this.$alertify.error("이메일 또는 비밀번호를 확인하세요.");
+                // } else {
+                    this.$alertify.error("로그인에 실패 하였습니다.");
+                // }
             }
         },
         async logout() {

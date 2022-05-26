@@ -41,9 +41,9 @@ instance.interceptors.response.use(
         console.error("================================")
         console.log("인터셉터 리스폰 : " + response.config.url);
         console.log(response)
-        if(response.config.url == "/login" && response.status == 200){
-            getToken(response.data)
-        }
+        // if(response.config.url == "/login" && response.status == 200){
+        //     getToken(response.data)
+        // }
         console.error("================================")
         return response;
         
