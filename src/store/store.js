@@ -30,10 +30,12 @@ export default new Vuex.Store({
       userName: "",
       regDt: "",
       readCount: 0,
-      fileList: [],
       sameUser: false,
+      commentList: [],
+      recommentList: [],
     },
     replyNum: 0, // 대댓글 토글을 위한 변수
+    boardUserType: '',
 
     pagination: {
       paginationDiv: "",
@@ -76,6 +78,19 @@ export default new Vuex.Store({
     },
     CHANGE_REPLY_NUM(state, payload) {
       state.replyNum = payload;
+    },
+    CHANGE_BOARD_DEFAULT(state, payload) {
+      state.boardStep = 'list';
+      state.boardType = '001';
+    },
+    CHANGE_BOARD_USER_TYPE(state, payload) {
+      state.boardUserType = payload;
+    },
+    CHANGE_BOARD_REPLY(state, payload) {
+      state.boardDetail.commentList = payload;
+    },
+    CHANGE_BOARD_REREPLY(state, payload) {
+      state.boardDetail.recommentList = payload;
     },
     //////////////////////// pagination ////////////////////////////////
     SET_PAGINATION_TOTAL_LIST_ITEM_COUNT(state, count) {

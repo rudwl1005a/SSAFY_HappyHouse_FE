@@ -48,32 +48,8 @@
             </table>
             <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
                 <pagination v-on:call-parent="movePage"></pagination>
-                <!-- <nav aria-label="Page navigation example">
-                    <ul class="pagination mb-0">
-                        <li class="page-item">
-                            <a class="page-link" href="#">Prev</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">1</a>
-                        </li>
-                        <li class="page-item active">
-                            <a class="page-link" href="#">2</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">3</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">4</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">5</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
-                        </li>
-                    </ul>
-                </nav> -->
-                <button @click="changeWrite" class="btn btn-tertiary" type="button">글 쓰기</button>
+                <button @click="changeWrite" class="btn btn-tertiary" type="button" v-if="$store.state.boardType != '003'">글 쓰기</button>
+                <button @click="changeWrite" class="btn btn-tertiary" type="button" v-if="$store.state.boardType == '003' && $store.state.login.userInfo.userCode == '102'">글 쓰기</button>
             </div>
         </div>
     </div>
@@ -224,6 +200,19 @@ export default {
             // 최종 포맷 (ex - '2021-10-08')
             return year + "-" + month + "-" + day;
         },
+    },
+    created() {
+        if (this.$store.state.boardType == "001") {
+            this.freeBoard();
+        } else if (this.$store.state.boardType == "002") {
+            this.qnaBoard();
+        } else if (this.$store.state.boardType == "003") {
+            this.noticeBoard();
+        }
+
+        console.log(this.$store.state.login.token);
+        this.active = this.$store.state.boardType;
+        console.log("active: " + this.active);
     },
 };
 </script>

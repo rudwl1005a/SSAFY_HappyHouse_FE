@@ -2,9 +2,9 @@
     <div :class="{ 'change-big': $store.state.mainDiv, 'change-small': !$store.state.mainDiv }" style="margin: 80px 10px 0 0">
         <nav>
             <div class="nav nav-tabs mb-4" id="nav-tab" role="tablist">
-                <a @click="freeBoard" class="nav-item nav-link active" id="nav-home-tab" data-bs-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" style="margin-right: 10px">자유게시판</a>
-                <a @click="qnaBoard" class="nav-item nav-link" id="nav-profile-tab" data-bs-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false" style="margin-right: 10px">Q&A</a>
-                <a @click="noticeBoard" class="nav-item nav-link" id="nav-contact-tab" data-bs-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">공지사항</a>
+                <a @click="freeBoard" class="nav-item nav-link" :class="{ 'active' : active == '001'}" id="nav-home-tab" data-bs-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" style="margin-right: 10px">자유게시판</a>
+                <a @click="qnaBoard" class="nav-item nav-link" :class="{ 'active' : active == '002'}" id="nav-profile-tab" data-bs-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false" style="margin-right: 10px">Q&A</a>
+                <a @click="noticeBoard" class="nav-item nav-link" :class="{ 'active' : active == '003'}" id="nav-contact-tab" data-bs-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">공지사항</a>
             </div>
         </nav>
         <board-list v-if="$store.state.boardStep == 'list'"
@@ -34,7 +34,9 @@ import BoardUpdate from "@/components/board/BoardUpdate.vue";
 export default {
     components: { BoardList, BoardWrite, BoardDetail, BoardUpdate },
     data() {
-        return {};
+        return {
+            active: '',
+        };
     },
     methods: {
         async freeBoard() {
@@ -128,12 +130,17 @@ export default {
                 if (data.result == 'login'){
                     this.$router.push("/login");
                 } else {
-                    let { regDt } = data.dto; // destructuring
-
                     let boardNew = { ...data.dto };
-
                     this.$store.commit('CHANGE_BOARD_DETAIL', boardNew);
                     console.log(boardNew);
+                    
+                    this.$store.commit("CHANGE_BOARD_REPLY", data.commentList);
+                    this.$store.commit("CHANGE_BOARD_REREPLY", data.recommentList);
+
+                    console.warn("lists:")
+                    console.log(this.$store.state.boardDetail.commentList);
+                    console.log(this.$store.state.boardDetail.recommentList);
+
 
                     this.$store.commit('CHANGE_BOARD_STEP', "detail");
                 }
@@ -143,15 +150,34 @@ export default {
         },
     },
     created() {
+
         if (this.$store.state.boardType == "001") {
             this.freeBoard();
         } else if (this.$store.state.boardType == "002") {
             this.qnaBoard();
         } else if (this.$store.state.boardType == "003") {
             this.noticeBoard();
+        } else if (this.$store.state.boardType == "004") {
+            this.$store.commit('CHANGE_BOARD_TYPE', "003");
+            this.$store.commit('CHANGE_BOARD_STEP', "detail");
+        } else if (this.$store.state.boardType == "006") {
+
+            if (this.$store.state.boardUserType == "001") {
+                this.$store.commit('CHANGE_BOARD_TYPE', "001");
+                this.$store.commit('CHANGE_BOARD_STEP', "detail");
+            } else if(this.$store.state.boardUserType == "002") {
+                this.$store.commit('CHANGE_BOARD_TYPE', "002");
+                this.$store.commit('CHANGE_BOARD_STEP', "detail");
+            } else if(this.$store.state.boardUserType == "003") {
+                this.$store.commit('CHANGE_BOARD_TYPE', "003");
+                this.$store.commit('CHANGE_BOARD_STEP', "detail");
+            }
+
         }
 
         console.log(this.$store.state.login.token);
+        this.active = this.$store.state.boardType;
+        console.log("active: " + this.active);
     },
 };
 </script>
