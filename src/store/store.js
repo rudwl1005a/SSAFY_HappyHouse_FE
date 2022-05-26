@@ -50,7 +50,8 @@ export default new Vuex.Store({
       currentPageIndex: 1,
 
       totalListItemCount: 0,
-    }
+    },
+
   },
   mutations: {
     CHANGE_MAIN(state, payload) {
@@ -112,6 +113,8 @@ export default new Vuex.Store({
     SET_SEARCHWORD(state, searchWord) {
       state.pagination.searchWord = searchWord;
     }
+    ///////////////////////////////////////////////
+    
   },
   getters: {
     getBoardType: function (state) {
