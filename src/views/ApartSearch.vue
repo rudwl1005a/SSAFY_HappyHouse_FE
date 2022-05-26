@@ -31,12 +31,12 @@
                 <!--시구동 검색 창 끝-->
                 <!--아파트명 검색 창 시작-->
                 <div class="col input-group mb-1 pt-1">
-                    <input type="text" class="form-control" placeholder="아파트명" @keyup.enter="getSearchResult" v-model="searchWord" />
-                    <button class="btn btn-tertiary" type="button" @click="getSearchResult">검색</button>
+                    <input type="text" class="form-control" placeholder="아파트명" @keyup.enter="getSearchResultInit" v-model="searchWord" />
+                    <button class="btn btn-tertiary" type="button" @click="getSearchResultInit">검색</button>
                 </div>
                 <!--아파트명 검색 창 끝-->
                 <!--검색 결과 정렬 및 관심지역 토글 창 시작-->
-                <div class="row">   <font-awesome-icon icon="fa-solid fa-x" />
+                <div class="row">  
                     <div class="col-6  mb-3 pt-1">
                         <select class="col form-select-sm mt-2" v-model="sortType" style="margin-left: -5px;">
                             <option value="0">정렬</option>
