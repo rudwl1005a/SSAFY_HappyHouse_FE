@@ -193,14 +193,13 @@ export default {
                 let response = await http.get("/address/dong/" + this.gugun);
                 let { data } = response;
 
-                console.log(data);
+                //console.log(data);
 
                 this.dongList = data;
             }
             this.getSearchResultInit();
         },
         dong: async function(){
-            if (this.dong == "0") return;
             this.getSearchResultInit();
         },
         interestToggle : function(){
@@ -255,7 +254,7 @@ export default {
                 url += "&aptKeyword=" + this.searchWord;
             }
 
-            console.log("search query : " + url);
+            //console.log("search query : " + url);
             return url;
         }, //end getURL
         getSearchResult: async function () {
@@ -271,7 +270,7 @@ export default {
             })
 
             //this.apartList = data.list;
-            console.log(this.apartList)
+            //console.log(this.apartList)
 
             this.TOTAL_LIST_ITEM_COUNT = data.count;
             //addPagination();
@@ -290,7 +289,7 @@ export default {
         }, // end getSearchResultInit
         detailApart: async function (aptCode) {
             this.aptCode = aptCode;
-            console.log(aptCode);
+            //console.log(aptCode);
             this.detailModal.show();
             //displayMarkers(data);
         },
@@ -309,8 +308,9 @@ export default {
             if (data == 1) {
                 apart.isUserInterest = (apart.isUserInterest+1) % 2;
                 if(this.interestToggle){
-                    this.getSearchResult();
+                    this.getSearchResultInit();
                 }
+                this.$refs.MapView.removeCircle();
                 this.$refs.MapView.getMarker(apart);
             }
             //this.getSearchResult();
@@ -345,7 +345,7 @@ export default {
 
         // 내려오면 api를 호출하여 아래에 더 추가,
         handleLoadMore() {
-            console.log("리스트 추가")
+            //console.log("리스트 추가")
             this.CURRENT_PAGE_INDEX += 1;
             this.getSearchResult();
             // api를 호출하여 리스트 추가하면 됨, 현재는 pushList에 1개의 index 추가

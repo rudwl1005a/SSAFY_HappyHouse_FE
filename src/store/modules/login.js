@@ -7,7 +7,7 @@ const login = {
     },
     mutations: {
         LOGIN(state, payload) {
-            console.log(payload);
+            //console.log(payload);
             state.isLogin = true;
             state.userInfo = payload;
         },
@@ -20,7 +20,7 @@ const login = {
         },
         UPDATE_USER(state, payload) {
             state.userInfo = payload;
-            console.log(payload);
+            //console.log(payload);
         },
         DELETE_USER(state, payload) {
             state.isLogin = false;

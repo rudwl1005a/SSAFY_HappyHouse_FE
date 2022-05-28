@@ -64,11 +64,11 @@ export default new Vuex.Store({
       state.sidebar_arrow = payload;
     },
     CHANGE_BOARD_TYPE(state, payload) {
-      console.log(payload);
+      //console.log(payload);
       state.boardType = payload;
     },
     CHANGE_BOARDLIST(state, payload) {
-      console.log(payload);
+      //console.log(payload);
       state.boardList = payload.list;
     },
     CHANGE_BOARD_STEP(state, payload) {

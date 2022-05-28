@@ -92,12 +92,12 @@ export default {
                 setTimeout(100);
                 let response = await http.post("/login", { userId: this.userId, password: this.password });
                 let { data } = response;
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == "success"){
                     this.$store.commit("login/SET_TOKEN", response.headers.authorization);
                     // console.log(response.headers.authorization);
-                    console.log("token: " + this.$store.state.login.token);
+                   // console.log("token: " + this.$store.state.login.token);
 
                     let loginObj = {
                         userId: data.userId, 
@@ -126,10 +126,10 @@ export default {
             try {
                 let response = await http.post("/logout");
                 let { data } = response;
-                console.log(data);
+                //console.log(data);
 
                 this.$store.commit("login/SET_TOKEN", undefined);
-                console.log(this.$store.state.login.token);
+                //console.log(this.$store.state.login.token);
                 this.$store.commit("login/LOGOUT");
             } catch (error) {
                 console.error(error);
@@ -138,7 +138,7 @@ export default {
         },
         authInst() {
             // eslint-disable-next-line
-            console.log(gapi.auth2.getAuthInstance());
+            //console.log(gapi.auth2.getAuthInstance());
         },
     },
     computed: {

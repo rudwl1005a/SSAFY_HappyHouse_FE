@@ -150,11 +150,11 @@ export default {
                 name: this.name,
             };
 
-            console.log(registerObj);
+            //console.log(registerObj);
 
             try {
                 let { data } = await http.post("/users", registerObj);
-                console.log(data);
+                //console.log(data);
                 if (data.result == "success") {
                     this.$alertify.alert("Welcome!", "회원가입을 축하합니다. 로그인 페이지로 이동합니다.");
                     this.$router.push("/login");

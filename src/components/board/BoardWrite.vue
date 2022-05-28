@@ -67,7 +67,7 @@ export default {
             try {
                 let { data } = await http.post("/boards", wirteobj);
 
-                console.log(data);
+                //console.log(data);
                 this.$alertify.success("글이 등록되었습니다.");
 
                 // list 갱신

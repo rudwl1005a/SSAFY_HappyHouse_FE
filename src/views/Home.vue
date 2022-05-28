@@ -120,7 +120,7 @@ export default {
 
             try {
                 let { data } = await http.get("/noticeboards" + urlParams);
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == 1) {
                     this.noticeList = data.list;
@@ -134,11 +134,11 @@ export default {
             }
         },
         async noticeBoardDetail(boardId) {
-            console.log(boardId);
+            //console.log(boardId);
             try {
                 let response = await http.get("/boards/" + boardId);
                 let { data } = response;
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == "login") {
                     this.$router.push("/login");
@@ -146,7 +146,7 @@ export default {
                     let boardNew = { ...data.dto };
 
                     this.$store.commit("CHANGE_BOARD_DETAIL", boardNew);
-                    console.log(boardNew);
+                    //console.log(boardNew);
 
                     // this.$store.commit('CHANGE_BOARD_STEP', "detail");
                     this.$store.commit("CHANGE_BOARD_TYPE", "004");
@@ -167,11 +167,11 @@ export default {
 
             try {
                 let { data } = await http.get("/freeboards" + urlParams);
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == 1) {
                     this.freeList = data.list;
-                    console.warn(this.freeList);
+                    //console.warn(this.freeList);
                 } else {
                     this.$alertify.error("글 조회 과정에 문제가 생겼습니다.");
                 }
@@ -181,11 +181,11 @@ export default {
             }
         },
         async freeBoardDetail(boardId) {
-            console.log(boardId);
+            //console.log(boardId);
             try {
                 let response = await http.get("/boards/" + boardId);
                 let { data } = response;
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == "login") {
                     this.$router.push("/login");
@@ -193,7 +193,7 @@ export default {
                     let boardNew = { ...data.dto };
 
                     this.$store.commit("CHANGE_BOARD_DETAIL", boardNew);
-                    console.log(boardNew);
+                    //console.log(boardNew);
 
                     this.$store.commit("CHANGE_BOARD_TYPE", "005");
 

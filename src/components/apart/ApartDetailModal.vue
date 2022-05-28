@@ -55,14 +55,14 @@ export default {
   },
   watch: {
     aptCode: async function () {
-      console.log(this.aptCode + " modal");
+      //console.log(this.aptCode + " modal");
       let url = "/aparts/" + this.aptCode;
 
       let response = await http.get(url);
       let { data } = response;
       this.apartInfo = data;
 
-      console.log(this.apartInfo.subwayList);
+      //console.log(this.apartInfo.subwayList);
     },
   },
   methods: {},

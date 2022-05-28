@@ -73,7 +73,7 @@ export default {
     methods: {
         // pagination
         movePage(pageIndex) {
-            console.log("BoardMainVue : movePage : pageIndex : " + pageIndex);
+            //console.log("BoardMainVue : movePage : pageIndex : " + pageIndex);
 
             this.$store.commit("SET_PAGINATION_MOVE_PAGE", pageIndex);
 
@@ -83,7 +83,7 @@ export default {
             this.$store.commit("CHANGE_BOARD_STEP", "write");
         },
         boardDetail(boardId){
-            console.log(boardId);
+            //console.log(boardId);
             this.$emit('boardDetail', boardId);
         },
         searchBoard(){
@@ -103,7 +103,7 @@ export default {
             
             try {
                 let { data } = await http.get("/freeboards" + urlParams);
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == 1) {
                     this.$store.commit("CHANGE_BOARDLIST", data);
@@ -128,7 +128,7 @@ export default {
 
             try {
                 let { data } = await http.get("/qnaboards" + urlParams);
-                console.log(data);
+               // console.log(data);
 
                 if (data.result == 1) {
                     this.$store.commit("CHANGE_BOARDLIST", data);
@@ -151,7 +151,7 @@ export default {
 
             try {
                 let { data } = await http.get("/noticeboards" + urlParams);
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == 1) {
                     this.$store.commit("CHANGE_BOARDLIST", data);
@@ -210,9 +210,9 @@ export default {
             this.noticeBoard();
         }
 
-        console.log(this.$store.state.login.token);
+        //console.log(this.$store.state.login.token);
         this.active = this.$store.state.boardType;
-        console.log("active: " + this.active);
+        //console.log("active: " + this.active);
     },
 };
 </script>

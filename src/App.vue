@@ -73,7 +73,7 @@ export default {
         isLogin : function(){
             if(this.isLogin){
 
-                this.webSocket = new WebSocket("ws://localhost:8080/ws/chat");
+                this.webSocket = new WebSocket("ws://15.164.218.120:8080/ws/chat");
                 this.webSocket.onopen = this.onOpen;
                 this.webSocket.onclose = this.onClose;
                 this.webSocket.onmessage = this.onMessage;
@@ -85,8 +85,9 @@ export default {
         }
     },
     mounted(){
-        if(this.isLogin){
+        if(this.isLogin){ 
             this.webSocket = new WebSocket("ws://localhost:8080/ws/chat");
+            //this.webSocket = new WebSocket("ws://15.164.218.120:8080/ws/chat");
             this.webSocket.onopen = this.onOpen;
             this.webSocket.onclose = this.onClose;
             this.webSocket.onmessage = this.onMessage;
@@ -126,7 +127,7 @@ export default {
             
         },
         onMessage : function(e){
-            console.log(e.data)
+            //console.log(e.data)
             let {sender, message} = JSON.parse(e.data);
             this.chatMesseges.push({sender, message});
 
@@ -159,14 +160,14 @@ export default {
     transition-duration: 0.5s;
 }
 .chat-icon-div {
-    position : absolute;
+    position : fixed;
     top : 90%;
 
     z-index: 10;
     transition-duration: 0.5s;
 }
 .chat-div {
-    position : absolute;
+    position : fixed;
     top : 55%;
     width:  300px;
     height: 400px;

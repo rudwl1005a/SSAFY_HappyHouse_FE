@@ -65,12 +65,12 @@ export default {
                 content: this.CKEditor.getData() 
             };
 
-            console.log(wirteObj);
+            //onsole.log(wirteObj);
 
             try {
                 let { data } = await http.put("/boards/" + this.$store.state.boardDetail.boardId, wirteObj);
 
-                console.log(data);
+                //console.log(data);
                 this.$alertify.success("글이 수정되었습니다.");
 
                 // list 갱신

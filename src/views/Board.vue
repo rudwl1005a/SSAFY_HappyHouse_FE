@@ -49,7 +49,7 @@ export default {
 
             try {
                 let { data } = await http.get("/freeboards" + urlParams);
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == 1) {
                     this.$store.commit("CHANGE_BOARDLIST", data);
@@ -76,7 +76,7 @@ export default {
 
             try {
                 let { data } = await http.get("/qnaboards" + urlParams);
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == 1) {
                     this.$store.commit("CHANGE_BOARDLIST", data);
@@ -103,7 +103,7 @@ export default {
 
             try {
                 let { data } = await http.get("/noticeboards" + urlParams);
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == 1) {
                     this.$store.commit("CHANGE_BOARDLIST", data);
@@ -122,25 +122,25 @@ export default {
             }
         },
         async boardDetail(boardId) {
-            console.log(boardId);
+            //console.log(boardId);
             try {
                 let response = await http.get('/boards/' + boardId);
                 let { data } = response;
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == 'login'){
                     this.$router.push("/login");
                 } else {
                     let boardNew = { ...data.dto };
                     this.$store.commit('CHANGE_BOARD_DETAIL', boardNew);
-                    console.log(boardNew);
+                    //console.log(boardNew);
                     
                     this.$store.commit("CHANGE_BOARD_REPLY", data.commentList);
                     this.$store.commit("CHANGE_BOARD_REREPLY", data.recommentList);
 
-                    console.warn("lists:")
-                    console.log(this.$store.state.boardDetail.commentList);
-                    console.log(this.$store.state.boardDetail.recommentList);
+                    //console.warn("lists:")
+                    //console.log(this.$store.state.boardDetail.commentList);
+                    //console.log(this.$store.state.boardDetail.recommentList);
 
                     this.$store.commit('CHANGE_BOARD_STEP', "detail");
                 }
@@ -178,9 +178,9 @@ export default {
 
         }
 
-        console.log(this.$store.state.login.token);
+        //console.log(this.$store.state.login.token);
         this.active = this.$store.state.boardType;
-        console.log("active: " + this.active);
+        //console.log("active: " + this.active);
     },
 };
 </script>

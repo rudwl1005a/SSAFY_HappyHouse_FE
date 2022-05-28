@@ -101,10 +101,10 @@ export default {
             try {
                 let response = await http.post("/logout");
                 let { data } = response;
-                console.log(data);
+                //console.log(data);
 
                 this.$store.commit("login/SET_TOKEN", undefined);
-                console.log(this.$store.state.login.token);
+                //console.log(this.$store.state.login.token);
                 this.$store.commit("login/LOGOUT");
                 this.$router.push("/");
             } catch (error) {
@@ -113,7 +113,7 @@ export default {
             }
         },
         changeMenu(menu){
-            console.log(menu);
+            //console.log(menu);
             this.$store.commit("CHANGE_MENU", menu);
         },
     },

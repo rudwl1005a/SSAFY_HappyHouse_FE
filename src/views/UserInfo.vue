@@ -159,7 +159,7 @@ export default {
     methods: {
         // pagination
         movePage(pageIndex) {
-            console.log("BoardMainVue : movePage : pageIndex : " + pageIndex);
+            //console.log("BoardMainVue : movePage : pageIndex : " + pageIndex);
 
             this.$store.commit("SET_PAGINATION_MOVE_PAGE", pageIndex);
 
@@ -175,13 +175,13 @@ export default {
             
             try {
                 let { data } = await http.get("/myboards" + urlParams);
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == 1) {
                     this.$store.commit("CHANGE_BOARDLIST", data);
                     this.$store.commit("SET_PAGINATION_TOTAL_LIST_ITEM_COUNT", data.count);
 
-                    console.log(this.$store.state.boardList);
+                    //console.log(this.$store.state.boardList);
 
                     this.boardList = this.$store.state.boardList;
                 } else {
@@ -209,10 +209,10 @@ export default {
                 email: this.email,
                 phone: this.phone,
             };
-            console.log(updateObj);
+            //console.log(updateObj);
             try {
                 let { data } = await http.put("/users/" + this.userId, updateObj);
-                console.log(data);
+                //console.log(data);
                 this.$store.commit("login/UPDATE_USER", updateObj);
                 this.$alertify.alert("success!", "회원 수정을 완료하였습니다.");
                 this.disabled = (this.disabled + 1) % 2;
@@ -237,7 +237,7 @@ export default {
         async userDelete() {
             try {
                 let { data } = await http.delete("/users/" + this.userId);
-                console.log(data);
+                //console.log(data);
                 this.$store.commit("login/DELETE_USER");
                 this.$alertify.alert("success!", "회원 탈퇴를 완료하였습니다.");
                 this.$router.push("/");
@@ -249,11 +249,11 @@ export default {
             this.validated = false;
         },
         async boardDetail(boardId, boardCode) {
-            console.log(boardId + " " + boardCode);
+            //console.log(boardId + " " + boardCode);
             try {
                 let response = await http.get('/boards/' + boardId);
                 let { data } = response;
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == 'login'){
                     this.$router.push("/login");
@@ -261,7 +261,7 @@ export default {
                     let boardNew = { ...data.dto };
 
                     this.$store.commit('CHANGE_BOARD_DETAIL', boardNew);
-                    console.log(boardNew);
+                    //console.log(boardNew);
 
                     this.$store.commit("CHANGE_BOARD_TYPE", "006");
                     this.$store.commit("CHANGE_BOARD_USER_TYPE", boardCode);

@@ -132,7 +132,7 @@ export default {
         async deleteBoard() {
             try {
                 let { data } = await http.delete("/boards/" + this.$store.state.boardDetail.boardId);
-                console.log(data);
+                //console.log(data);
 
                 if (data.result == 1) {
                     this.$store.commit("CHANGE_BOARD_STEP", "list");
@@ -169,7 +169,7 @@ export default {
 
             try {
                 let { data } = await http.post("/comments/" + this.$store.state.boardDetail.boardId, commentObj);
-                console.log(data);
+                //console.log(data);
 
                 if (data == "success") {
                     this.$emit('refreshBoardDetail', this.$store.state.boardDetail.boardId);
@@ -199,7 +199,7 @@ export default {
 
             try {
                 let { data } = await http.post("/comments/" + this.$store.state.boardDetail.boardId, commentObj);
-                console.log(data);
+                //console.log(data);
 
                 if (data == "success") {
                     this.$emit('refreshBoardDetail', this.$store.state.boardDetail.boardId);
@@ -224,7 +224,7 @@ export default {
         async deleteReply(commentId){
             try {
                 let { data } = await http.delete("/comments/" + commentId);
-                console.log(data);
+               // console.log(data);
 
                 if (data == "success") {
                     this.$emit('refreshBoardDetail', this.$store.state.boardDetail.boardId);
@@ -247,7 +247,7 @@ export default {
         async deleteRereply(commentId){
             try {
                 let { data } = await http.delete("/comments/re/" + commentId);
-                console.log(data);
+                //console.log(data);
 
                 if (data == "success") {
                     this.$emit('refreshBoardDetail', this.$store.state.boardDetail.boardId);
@@ -301,7 +301,7 @@ export default {
     },
     mounted() {
         this.$store.commit('CHANGE_REPLY_NUM', 0);
-        console.log(this.$store.state.boardDetail);
+        //console.log(this.$store.state.boardDetail);
         this.replyList = this.$store.state.boardDetail.commentList;
         this.rereplyList = this.$store.state.boardDetail.recommentList;
     },

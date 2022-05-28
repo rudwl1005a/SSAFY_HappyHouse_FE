@@ -10,7 +10,7 @@ async function getToken(user){
 }
 
 const instance = axios.create({
-    // baseURL: 'http://3.34.190.221:8080',
+    //baseURL: 'http://15.164.218.120:8080',
     baseURL: 'http://localhost:8080',
     headers: { 
         'Content-type': 'application/json', 
@@ -23,11 +23,11 @@ instance.interceptors.request.use(
     function (config) {
         config.headers["Authorization"] = store.state.login.token;
         
-        console.error("================================")
-        console.log("인터셉터 리퀘스트 : "+ config.url );
+        // console.error("================================")
+        // console.log("인터셉터 리퀘스트 : "+ config.url );
         
-        console.log("Authorization = " + config.headers["Authorization"]);
-        console.error("================================")
+        // console.log("Authorization = " + config.headers["Authorization"]);
+        // console.error("================================")
         return config;
     },
     function (error) {
@@ -38,13 +38,13 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
     function (response) {
-        console.error("================================")
-        console.log("인터셉터 리스폰 : " + response.config.url);
-        console.log(response)
-        // if(response.config.url == "/login" && response.status == 200){
-        //     getToken(response.data)
-        // }
-        console.error("================================")
+        // console.error("================================")
+        // console.log("인터셉터 리스폰 : " + response.config.url);
+        // console.log(response)
+        // // if(response.config.url == "/login" && response.status == 200){
+        // //     getToken(response.data)
+        // // }
+        // console.error("================================")
         return response;
         
     },
