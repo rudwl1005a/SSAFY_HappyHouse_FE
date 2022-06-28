@@ -1,5 +1,8 @@
 # happyhouse
 
+## Back-End Github
+https://github.com/rudwl1005a/SSAFY_HappyHouse_BE
+
 ## Project setup
 ```
 npm install
